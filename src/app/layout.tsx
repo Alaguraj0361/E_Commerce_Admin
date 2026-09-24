@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { ToastProvider } from '../components/ui/ToastProvider';
 import { AdminLayoutWrapper } from '../components/layout/AdminLayoutWrapper';
 
 const inter = Inter({
@@ -23,7 +22,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="font-sans min-h-screen bg-zinc-950 text-zinc-100">
-        <ToastProvider />
         <AdminLayoutWrapper>{children}</AdminLayoutWrapper>
       </body>
     </html>

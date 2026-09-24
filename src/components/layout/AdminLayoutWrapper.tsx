@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { AdminSidebar } from './AdminSidebar';
+import { ToastProvider } from '../ui/ToastProvider';
 import { useAdminAuthStore } from '../../store/adminAuthStore';
 
 export const AdminLayoutWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -23,7 +24,12 @@ export const AdminLayoutWrapper = ({ children }: { children: React.ReactNode }) 
   }, [checkAuth, isLoginPage, router]);
 
   if (isLoginPage) {
-    return <div className="min-h-screen bg-zinc-950 text-zinc-100">{children}</div>;
+    return (
+      <div className="min-h-screen bg-zinc-950 text-zinc-100">
+        <ToastProvider />
+        {children}
+      </div>
+    );
   }
 
   if (isLoading) {
@@ -36,6 +42,7 @@ export const AdminLayoutWrapper = ({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex">
+      <ToastProvider />
       <AdminSidebar />
       <main className="flex-1 min-w-0 overflow-y-auto bg-zinc-900/30">
         <div className="p-8 sm:p-10 max-w-7xl mx-auto">{children}</div>
