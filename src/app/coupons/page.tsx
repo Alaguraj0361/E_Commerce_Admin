@@ -135,13 +135,13 @@ export default function AdminCouponsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-white flex items-center gap-3">
+          <h1 className="text-2xl font-black tracking-tight text-[#18140B] flex items-center gap-3">
             Promotions & Coupons
-            <span className="text-xs font-mono font-normal bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded-full">
+            <span className="text-xs font-mono font-normal bg-[#F5EFEB] text-[#18140B] border border-[#EAE1D1] text-[#3D342B] px-2 py-0.5 rounded-full">
               {coupons.length} Active Codes
             </span>
           </h1>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-[#6B6055] mt-1">
             Create discount vouchers, configure spend thresholds, and enforce redemption limits.
           </p>
         </div>
@@ -149,14 +149,14 @@ export default function AdminCouponsPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={fetchCoupons}
-            className="p-2.5 rounded-xl border border-zinc-800 hover:border-zinc-700 bg-zinc-900 text-zinc-400 hover:text-white transition-colors"
+            className="p-2.5 rounded-xl border border-[#EAE1D1] hover:border-[#EAE1D1] bg-white text-[#6B6055] hover:text-[#18140B] transition-colors"
             title="Refresh List"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
           </button>
           <button
             onClick={openCreateModal}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold text-xs tracking-wide transition-all shadow-md active:scale-95"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B8860B] hover:brightness-105 text-[#18140B] shadow-sm font-bold text-xs tracking-wide transition-all shadow-md active:scale-95"
           >
             <Plus className="w-4 h-4" /> Create Voucher
           </button>
@@ -164,24 +164,24 @@ export default function AdminCouponsPage() {
       </div>
 
       {/* Filter */}
-      <div className="bg-zinc-900/60 border border-zinc-800/80 p-4 rounded-2xl">
+      <div className="bg-white border border-[#EAE1D1] p-4 rounded-2xl">
         <div className="relative w-full md:w-96">
-          <Search className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#8C7E72] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search coupon codes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-zinc-950 border border-zinc-800 text-zinc-200 text-xs rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:border-amber-400/50 transition-colors"
+            className="w-full bg-[#FAF8F5] border border-[#EAE1D1] text-[#2D2319] text-xs rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:border-[#B8860B]/50 transition-colors"
           />
         </div>
       </div>
 
       {/* Coupons Table */}
-      <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl overflow-hidden shadow-xl">
+      <div className="bg-white border border-[#EAE1D1] rounded-2xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-zinc-300">
-            <thead className="bg-zinc-900/90 text-zinc-400 font-semibold border-b border-zinc-800 uppercase tracking-wider text-[10px]">
+          <table className="w-full text-left text-xs text-[#3D342B]">
+            <thead className="bg-[#FAF7F2] text-[#6B6055] font-semibold border-b border-[#EAE1D1] uppercase tracking-wider text-[10px]">
               <tr>
                 <th className="py-3.5 px-4">Coupon Code</th>
                 <th className="py-3.5 px-4">Discount Value</th>
@@ -192,10 +192,10 @@ export default function AdminCouponsPage() {
                 <th className="py-3.5 px-4 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800/50">
+            <tbody className="divide-y divide-[#EAE1D1]">
               {filteredCoupons.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-zinc-500">
+                  <td colSpan={7} className="py-12 text-center text-[#8C7E72]">
                     {isLoading ? 'Loading promotional vouchers...' : 'No promotional coupons found.'}
                   </td>
                 </tr>
@@ -206,12 +206,12 @@ export default function AdminCouponsPage() {
                   return (
                     <tr
                       key={coupon._id}
-                      className="hover:bg-zinc-800/30 transition-colors group"
+                      className="hover:bg-[#FAF7F2]/60 transition-colors group"
                     >
                       {/* Code */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono font-black text-amber-400 bg-zinc-950 border border-amber-400/30 px-2.5 py-1 rounded-lg text-xs tracking-wider">
+                          <span className="font-mono font-black text-[#B8860B] bg-[#FAF8F5] border border-[#B8860B]/30 px-2.5 py-1 rounded-lg text-xs tracking-wider">
                             {coupon.code}
                           </span>
                         </div>
@@ -219,10 +219,10 @@ export default function AdminCouponsPage() {
 
                       {/* Value */}
                       <td className="py-3.5 px-4">
-                        <span className="font-bold text-white text-xs flex items-center gap-1">
+                        <span className="font-bold text-[#18140B] text-xs flex items-center gap-1">
                           {coupon.discountType === 'percentage' ? (
                             <>
-                              <Percent className="w-3.5 h-3.5 text-amber-400" />
+                              <Percent className="w-3.5 h-3.5 text-[#B8860B]" />
                               {coupon.discountValue}% OFF
                             </>
                           ) : (
@@ -237,14 +237,14 @@ export default function AdminCouponsPage() {
                       {/* Thresholds */}
                       <td className="py-3.5 px-4 space-y-0.5 text-[11px]">
                         {coupon.minimumOrderAmount ? (
-                          <p className="text-zinc-300">
+                          <p className="text-[#3D342B]">
                             Min. Spend: {formatCurrency(coupon.minimumOrderAmount)}
                           </p>
                         ) : (
-                          <p className="text-zinc-500">No minimum</p>
+                          <p className="text-[#8C7E72]">No minimum</p>
                         )}
                         {coupon.maximumDiscount && (
-                          <p className="text-zinc-400">
+                          <p className="text-[#6B6055]">
                             Max Cap: {formatCurrency(coupon.maximumDiscount)}
                           </p>
                         )}
@@ -255,12 +255,12 @@ export default function AdminCouponsPage() {
                         <div className="flex items-center gap-1.5">
                           <Clock
                             className={`w-3.5 h-3.5 ${
-                              isExpired ? 'text-rose-400' : 'text-zinc-400'
+                              isExpired ? 'text-rose-400' : 'text-[#6B6055]'
                             }`}
                           />
                           <span
                             className={`text-xs ${
-                              isExpired ? 'text-rose-400 font-semibold' : 'text-zinc-300'
+                              isExpired ? 'text-rose-400 font-semibold' : 'text-[#3D342B]'
                             }`}
                           >
                             {formatDate(coupon.expiryDate)}
@@ -274,11 +274,11 @@ export default function AdminCouponsPage() {
                       {/* Usage */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-1.5">
-                          <span className="font-mono text-white text-xs font-semibold">
+                          <span className="font-mono text-[#18140B] text-xs font-semibold">
                             {coupon.usedCount || 0}
                           </span>
-                          <span className="text-zinc-500">/</span>
-                          <span className="font-mono text-zinc-400 text-xs">
+                          <span className="text-[#8C7E72]">/</span>
+                          <span className="font-mono text-[#6B6055] text-xs">
                             {coupon.usageLimit ? `${coupon.usageLimit} max` : 'Unlimited'}
                           </span>
                         </div>
@@ -290,7 +290,7 @@ export default function AdminCouponsPage() {
                           className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${
                             coupon.isActive && !isExpired
                               ? 'bg-emerald-950/70 text-emerald-400 border border-emerald-800/40'
-                              : 'bg-zinc-800 text-zinc-500 border border-zinc-700'
+                              : 'bg-[#F5EFEB] text-[#18140B] border border-[#EAE1D1] text-[#8C7E72] border border-[#EAE1D1]'
                           }`}
                         >
                           <span
@@ -306,7 +306,7 @@ export default function AdminCouponsPage() {
                       <td className="py-3.5 px-4 text-right">
                         <button
                           onClick={() => setDeleteConfirmId(coupon._id)}
-                          className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-400 hover:bg-rose-950/30 transition-colors"
+                          className="p-1.5 rounded-lg text-[#6B6055] hover:text-rose-400 hover:bg-rose-50 transition-colors"
                           title="Revoke Coupon"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -323,26 +323,26 @@ export default function AdminCouponsPage() {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirmId && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-[#EAE1D1] rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
             <div className="flex items-center gap-3 text-rose-400">
               <AlertCircle className="w-6 h-6 flex-shrink-0" />
-              <h3 className="font-bold text-white text-sm">Revoke Voucher?</h3>
+              <h3 className="font-bold text-[#18140B] text-sm">Revoke Voucher?</h3>
             </div>
-            <p className="text-xs text-zinc-400 leading-relaxed">
+            <p className="text-xs text-[#6B6055] leading-relaxed">
               Are you sure you want to delete this promotional coupon code? Customers will no longer be
               able to apply it at checkout.
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 onClick={() => setDeleteConfirmId(null)}
-                className="px-3.5 py-2 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+                className="px-3.5 py-2 rounded-xl text-xs font-semibold text-[#6B6055] hover:text-[#18140B] hover:bg-[#F5EFEB] transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirmId)}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-500 hover:bg-rose-600 text-white transition-all shadow-md"
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-500 hover:bg-rose-600 text-[#18140B] transition-all shadow-md"
               >
                 Delete
               </button>
@@ -353,13 +353,13 @@ export default function AdminCouponsPage() {
 
       {/* Create Coupon Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-              <h2 className="text-base font-bold text-white">Create Promotional Voucher</h2>
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-[#EAE1D1] rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#EAE1D1] pb-3">
+              <h2 className="text-base font-bold text-[#18140B]">Create Promotional Voucher</h2>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-lg text-zinc-400 hover:text-white transition-colors"
+                className="p-1 rounded-lg text-[#6B6055] hover:text-[#18140B] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -367,7 +367,7 @@ export default function AdminCouponsPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                   Coupon Code *
                 </label>
                 <input
@@ -376,19 +376,19 @@ export default function AdminCouponsPage() {
                   placeholder="e.g. SUMMER25, VIP50"
                   value={code}
                   onChange={(e) => setCode(e.target.value.toUpperCase())}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-mono font-bold text-amber-400 uppercase tracking-wider focus:outline-none focus:border-amber-400/50"
+                  className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3.5 py-2.5 text-xs font-mono font-bold text-[#B8860B] uppercase tracking-wider focus:outline-none focus:border-[#B8860B]/50"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                  <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                     Discount Type
                   </label>
                   <select
                     value={discountType}
                     onChange={(e) => setDiscountType(e.target.value as any)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white"
+                    className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3 py-2 text-xs text-[#18140B]"
                   >
                     <option value="percentage">Percentage (%)</option>
                     <option value="fixed">Fixed Amount (₹)</option>
@@ -396,7 +396,7 @@ export default function AdminCouponsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                  <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                     Discount Value *
                   </label>
                   <input
@@ -405,14 +405,14 @@ export default function AdminCouponsPage() {
                     required
                     value={discountValue}
                     onChange={(e) => setDiscountValue(parseFloat(e.target.value) || 0)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white"
+                    className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3 py-2 text-xs font-mono text-[#18140B]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                  <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                     Min. Order Amount (₹)
                   </label>
                   <input
@@ -420,13 +420,13 @@ export default function AdminCouponsPage() {
                     min="0"
                     value={minimumOrderAmount}
                     onChange={(e) => setMinimumOrderAmount(parseFloat(e.target.value) || 0)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white"
+                    className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3 py-2 text-xs font-mono text-[#18140B]"
                   />
                 </div>
 
                 {discountType === 'percentage' && (
                   <div>
-                    <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                    <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                       Max Discount Cap (₹)
                     </label>
                     <input
@@ -434,7 +434,7 @@ export default function AdminCouponsPage() {
                       min="0"
                       value={maximumDiscount}
                       onChange={(e) => setMaximumDiscount(parseFloat(e.target.value) || 0)}
-                      className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white"
+                      className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3 py-2 text-xs font-mono text-[#18140B]"
                     />
                   </div>
                 )}
@@ -442,7 +442,7 @@ export default function AdminCouponsPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                  <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                     Expiration Date
                   </label>
                   <input
@@ -450,12 +450,12 @@ export default function AdminCouponsPage() {
                     required
                     value={expiryDate}
                     onChange={(e) => setExpiryDate(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white"
+                    className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3 py-2 text-xs text-[#18140B]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                  <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                     Total Usage Cap
                   </label>
                   <input
@@ -463,33 +463,33 @@ export default function AdminCouponsPage() {
                     min="1"
                     value={usageLimit}
                     onChange={(e) => setUsageLimit(parseInt(e.target.value, 10) || 100)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white"
+                    className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3 py-2 text-xs font-mono text-[#18140B]"
                   />
                 </div>
               </div>
 
-              <label className="flex items-center gap-2.5 bg-zinc-950 border border-zinc-800 p-3 rounded-xl cursor-pointer">
+              <label className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#EAE1D1] p-3 rounded-xl cursor-pointer">
                 <input
                   type="checkbox"
                   checked={isActive}
                   onChange={(e) => setIsActive(e.target.checked)}
-                  className="rounded accent-amber-400 w-4 h-4"
+                  className="rounded accent-[#B8860B] w-4 h-4"
                 />
-                <span className="text-xs font-semibold text-white">Enable Voucher Immediately</span>
+                <span className="text-xs font-semibold text-[#18140B]">Enable Voucher Immediately</span>
               </label>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-800">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#EAE1D1]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white transition-colors"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-[#6B6055] hover:text-[#18140B] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold text-xs transition-all shadow-md active:scale-95 disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B8860B] hover:brightness-105 text-[#18140B] shadow-sm font-bold text-xs transition-all shadow-md active:scale-95 disabled:opacity-50"
                 >
                   {isSubmitting ? 'Creating...' : 'Issue Voucher'}
                 </button>

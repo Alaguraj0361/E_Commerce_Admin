@@ -31,3 +31,26 @@ api.interceptors.response.use(
     return Promise.reject({ ...error, customMessage: message });
   }
 );
+
+export const uploadSingleImage = async (file: File): Promise<string> => {
+  const formData = new FormData();
+  formData.append('image', file);
+  const response = await api.post('/upload/single', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data?.data?.url || response.data?.data?.relativeUrl;
+};
+
+export const uploadMultipleImages = async (files: File[]): Promise<string[]> => {
+  const formData = new FormData();
+  files.forEach((f) => formData.append('images', f));
+  const response = await api.post('/upload/multiple', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data?.data?.urls || [];
+};
+

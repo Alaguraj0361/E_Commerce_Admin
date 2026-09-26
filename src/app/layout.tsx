@@ -21,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="font-sans min-h-screen bg-zinc-950 text-zinc-100">
+      <body className="font-sans min-h-screen bg-[#FAF8F5] text-zinc-900">
         <AdminLayoutWrapper>{children}</AdminLayoutWrapper>
       </body>
     </html>

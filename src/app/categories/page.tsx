@@ -16,6 +16,7 @@ import {
 import { api } from '../../lib/api';
 import { Category } from '../../types';
 import { toast } from 'sonner';
+import { SingleImageUpload } from '@/components/ui/ImageUpload';
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -59,7 +60,7 @@ export default function AdminCategoriesPage() {
     setName('');
     setSlug('');
     setDescription('');
-    setImage('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format&fit=crop&q=80');
+    setImage('');
     setIsActive(true);
     setIsModalOpen(true);
   };
@@ -147,13 +148,13 @@ export default function AdminCategoriesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-white flex items-center gap-3">
+          <h1 className="text-2xl font-black tracking-tight text-[#18140B] flex items-center gap-3">
             Taxonomy & Categories
-            <span className="text-xs font-mono font-normal bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded-full">
+            <span className="text-xs font-mono font-normal bg-[#F5EFEB] text-[#18140B] border border-[#EAE1D1] text-[#3D342B] px-2 py-0.5 rounded-full">
               {categories.length} Collections
             </span>
           </h1>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-[#6B6055] mt-1">
             Organize the storefront navigation, catalog hierarchy, and collection cover banners.
           </p>
         </div>
@@ -161,14 +162,14 @@ export default function AdminCategoriesPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={fetchCategories}
-            className="p-2.5 rounded-xl border border-zinc-800 hover:border-zinc-700 bg-zinc-900 text-zinc-400 hover:text-white transition-colors"
+            className="p-2.5 rounded-xl border border-[#EAE1D1] hover:border-[#EAE1D1] bg-white text-[#6B6055] hover:text-[#18140B] transition-colors"
             title="Refresh List"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
           </button>
           <button
             onClick={openCreateModal}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold text-xs tracking-wide transition-all shadow-md active:scale-95"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B8860B] hover:brightness-105 text-[#18140B] shadow-sm font-bold text-xs tracking-wide transition-all shadow-md active:scale-95"
           >
             <Plus className="w-4 h-4" /> Add Category
           </button>
@@ -176,15 +177,15 @@ export default function AdminCategoriesPage() {
       </div>
 
       {/* Filter Bar */}
-      <div className="bg-zinc-900/60 border border-zinc-800/80 p-4 rounded-2xl">
+      <div className="bg-white border border-[#EAE1D1] p-4 rounded-2xl">
         <div className="relative w-full md:w-96">
-          <Search className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#8C7E72] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search categories by name or slug..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-zinc-950 border border-zinc-800 text-zinc-200 text-xs rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:border-amber-400/50 transition-colors"
+            className="w-full bg-[#FAF8F5] border border-[#EAE1D1] text-[#2D2319] text-xs rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:border-[#B8860B]/50 transition-colors"
           />
         </div>
       </div>
@@ -192,37 +193,37 @@ export default function AdminCategoriesPage() {
       {/* Categories Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {filteredCategories.length === 0 ? (
-          <div className="col-span-full py-12 text-center text-zinc-500 text-xs bg-zinc-900/40 border border-zinc-800/80 rounded-2xl">
+          <div className="col-span-full py-12 text-center text-[#8C7E72] text-xs bg-white border border-[#EAE1D1] rounded-2xl">
             {isLoading ? 'Loading categories...' : 'No categories found.'}
           </div>
         ) : (
           filteredCategories.map((cat) => (
             <div
               key={cat._id}
-              className="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl overflow-hidden hover:border-zinc-700 transition-all group flex flex-col justify-between"
+              className="bg-white border border-[#EAE1D1] rounded-2xl overflow-hidden hover:border-[#EAE1D1] transition-all group flex flex-col justify-between"
             >
               <div>
                 {/* Cover Image */}
-                <div className="h-36 relative bg-zinc-950 overflow-hidden">
+                <div className="h-36 relative bg-[#FAF8F5] overflow-hidden">
                   {cat.image ? (
-                    <Image
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
                       src={cat.image}
                       alt={cat.name}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-zinc-700">
+                    <div className="w-full h-full flex items-center justify-center text-[#8C7E72]">
                       <FolderTree className="w-10 h-10" />
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#18140B]/70 via-[#18140B]/20 to-transparent" />
                   <div className="absolute top-3 right-3">
                     <span
                       className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium backdrop-blur-md ${
                         cat.isActive
                           ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-700/50'
-                          : 'bg-zinc-900/80 text-zinc-500 border border-zinc-800'
+                          : 'bg-white text-[#8C7E72] border border-[#EAE1D1]'
                       }`}
                     >
                       <span
@@ -234,35 +235,35 @@ export default function AdminCategoriesPage() {
                     </span>
                   </div>
                   <div className="absolute bottom-3 left-4 right-4">
-                    <h3 className="font-bold text-white text-base leading-tight drop-shadow-sm">
+                    <h3 className="font-bold text-[#18140B] text-base leading-tight drop-shadow-sm">
                       {cat.name}
                     </h3>
-                    <p className="text-[10px] font-mono text-zinc-400 mt-0.5">/{cat.slug}</p>
+                    <p className="text-[10px] font-mono text-[#6B6055] mt-0.5">/{cat.slug}</p>
                   </div>
                 </div>
 
                 {/* Description */}
                 <div className="p-4">
-                  <p className="text-xs text-zinc-400 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-[#6B6055] line-clamp-2 leading-relaxed">
                     {cat.description || 'No descriptive overview provided for this category.'}
                   </p>
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="p-4 pt-0 border-t border-zinc-800/40 flex items-center justify-between mt-2">
-                <span className="text-[10px] text-zinc-500 font-mono">ID: {cat._id.slice(-6)}</span>
+              <div className="p-4 pt-0 border-t border-[#EAE1D1] flex items-center justify-between mt-2">
+                <span className="text-[10px] text-[#8C7E72] font-mono">ID: {cat._id.slice(-6)}</span>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => openEditModal(cat)}
-                    className="p-1.5 rounded-lg text-zinc-400 hover:text-amber-400 hover:bg-zinc-800 transition-colors"
+                    className="p-1.5 rounded-lg text-[#6B6055] hover:text-[#B8860B] hover:bg-[#F5EFEB] transition-colors"
                     title="Edit Category"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={() => setDeleteConfirmId(cat._id)}
-                    className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-400 hover:bg-rose-950/30 transition-colors"
+                    className="p-1.5 rounded-lg text-[#6B6055] hover:text-rose-400 hover:bg-rose-50 transition-colors"
                     title="Delete Category"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -276,25 +277,25 @@ export default function AdminCategoriesPage() {
 
       {/* Delete Confirmation */}
       {deleteConfirmId && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-[#EAE1D1] rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
             <div className="flex items-center gap-3 text-rose-400">
               <AlertCircle className="w-6 h-6 flex-shrink-0" />
-              <h3 className="font-bold text-white text-sm">Delete Category?</h3>
+              <h3 className="font-bold text-[#18140B] text-sm">Delete Category?</h3>
             </div>
-            <p className="text-xs text-zinc-400 leading-relaxed">
+            <p className="text-xs text-[#6B6055] leading-relaxed">
               Are you sure you want to delete this category? Associated products may need to be reassigned.
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 onClick={() => setDeleteConfirmId(null)}
-                className="px-3.5 py-2 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+                className="px-3.5 py-2 rounded-xl text-xs font-semibold text-[#6B6055] hover:text-[#18140B] hover:bg-[#F5EFEB] transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirmId)}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-500 hover:bg-rose-600 text-white transition-all shadow-md"
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-500 hover:bg-rose-600 text-[#18140B] transition-all shadow-md"
               >
                 Delete
               </button>
@@ -305,15 +306,15 @@ export default function AdminCategoriesPage() {
 
       {/* Create / Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-              <h2 className="text-base font-bold text-white">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-[#EAE1D1] rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#EAE1D1] pb-3">
+              <h2 className="text-base font-bold text-[#18140B]">
                 {editingCategory ? 'Edit Category' : 'Create New Category'}
               </h2>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-lg text-zinc-400 hover:text-white transition-colors"
+                className="p-1 rounded-lg text-[#6B6055] hover:text-[#18140B] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -321,7 +322,7 @@ export default function AdminCategoriesPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                   Category Name *
                 </label>
                 <input
@@ -330,12 +331,12 @@ export default function AdminCategoriesPage() {
                   placeholder="e.g. Leather Goods, Timepieces"
                   value={name}
                   onChange={(e) => handleNameChange(e.target.value)}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400/50"
+                  className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3.5 py-2.5 text-xs text-[#18140B] focus:outline-none focus:border-[#B8860B]/50"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                   URL Slug
                 </label>
                 <input
@@ -343,30 +344,20 @@ export default function AdminCategoriesPage() {
                   placeholder="auto-generated-from-name"
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-amber-400/50"
+                  className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3.5 py-2.5 text-xs font-mono text-[#18140B] focus:outline-none focus:border-[#B8860B]/50"
                 />
               </div>
 
-              <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
-                  Cover Image URL
-                </label>
-                <input
-                  type="url"
-                  placeholder="https://images.unsplash.com/..."
-                  value={image}
-                  onChange={(e) => setImage(e.target.value)}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400/50"
-                />
-                {image && (
-                  <div className="mt-2 h-24 rounded-xl overflow-hidden relative border border-zinc-800 bg-zinc-950">
-                    <Image src={image} alt="Preview" fill className="object-cover" />
-                  </div>
-                )}
-              </div>
+              {/* Cover Image Upload */}
+              <SingleImageUpload
+                value={image}
+                onChange={setImage}
+                label="Category Cover Image"
+                helperText="Upload category banner or card photo (JPG, PNG, WebP up to 10MB)"
+              />
 
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                   Description
                 </label>
                 <textarea
@@ -374,32 +365,32 @@ export default function AdminCategoriesPage() {
                   placeholder="Brief description for category banner..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-amber-400/50 leading-relaxed"
+                  className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl p-3 text-xs text-[#18140B] focus:outline-none focus:border-[#B8860B]/50 leading-relaxed"
                 />
               </div>
 
-              <label className="flex items-center gap-2.5 bg-zinc-950 border border-zinc-800 p-3 rounded-xl cursor-pointer">
+              <label className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#EAE1D1] p-3 rounded-xl cursor-pointer">
                 <input
                   type="checkbox"
                   checked={isActive}
                   onChange={(e) => setIsActive(e.target.checked)}
-                  className="rounded accent-amber-400 w-4 h-4"
+                  className="rounded accent-[#B8860B] w-4 h-4"
                 />
-                <span className="text-xs font-semibold text-white">Active in Storefront</span>
+                <span className="text-xs font-semibold text-[#18140B]">Active in Storefront</span>
               </label>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-800">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#EAE1D1]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white transition-colors"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-[#6B6055] hover:text-[#18140B] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold text-xs transition-all shadow-md active:scale-95 disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B8860B] hover:brightness-105 text-[#18140B] shadow-sm font-bold text-xs transition-all shadow-md active:scale-95 disabled:opacity-50"
                 >
                   {isSubmitting ? 'Saving...' : editingCategory ? 'Save Changes' : 'Create Category'}
                 </button>

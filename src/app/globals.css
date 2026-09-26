@@ -4,30 +4,34 @@
 
 @layer base {
   :root {
-    --background: #09090b;
-    --foreground: #f4f4f5;
+    --background: #FAF8F5;
+    --foreground: #18140B;
+    --card: #FFFFFF;
+    --card-foreground: #18140B;
+    --border: #EAE1D1;
+    --gold: #B8860B;
   }
 
   body {
-    @apply bg-zinc-950 text-zinc-100 antialiased selection:bg-zinc-800 selection:text-white;
+    @apply bg-[#FAF8F5] text-zinc-900 antialiased selection:bg-amber-100 selection:text-amber-900;
   }
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #FAF8F5;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: #D8CEBD;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+  background: #B8860B;
 }

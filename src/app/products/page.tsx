@@ -23,6 +23,7 @@ import { api } from '../../lib/api';
 import { formatCurrency } from '../../lib/utils';
 import { Product, Category, ProductVariant, ProductImage } from '../../types';
 import { toast } from 'sonner';
+import { MultiImageUpload } from '@/components/ui/ImageUpload';
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -107,13 +108,7 @@ export default function AdminProductsPage() {
     setFormData({
       ...initialFormState,
       category: categories[0]?._id || '',
-      images: [
-        {
-          url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80',
-          alt: 'Product photo',
-          isMain: true,
-        },
-      ],
+      images: [],
     });
     setTagsInput('luxury, modern, bestseller');
     setIsModalOpen(true);
@@ -292,13 +287,13 @@ export default function AdminProductsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-white flex items-center gap-3">
+          <h1 className="text-2xl font-black tracking-tight text-[#18140B] flex items-center gap-3">
             Products Catalog
-            <span className="text-xs font-mono font-normal bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded-full">
+            <span className="text-xs font-mono font-normal bg-[#F5EFEB] text-[#18140B] border border-[#EAE1D1] text-[#3D342B] px-2 py-0.5 rounded-full">
               {products.length} Items
             </span>
           </h1>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-[#6B6055] mt-1">
             Create, edit, manage product inventory, visual galleries, and multi-SKU variants.
           </p>
         </div>
@@ -306,14 +301,14 @@ export default function AdminProductsPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={fetchProducts}
-            className="p-2.5 rounded-xl border border-zinc-800 hover:border-zinc-700 bg-zinc-900 text-zinc-400 hover:text-white transition-colors"
+            className="p-2.5 rounded-xl border border-[#EAE1D1] hover:border-[#EAE1D1] bg-white text-[#6B6055] hover:text-[#18140B] transition-colors"
             title="Refresh List"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
           </button>
           <button
             onClick={openCreateModal}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold text-xs tracking-wide transition-all shadow-md active:scale-95"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B8860B] hover:brightness-105 text-[#18140B] shadow-sm font-bold text-xs tracking-wide transition-all shadow-md active:scale-95"
           >
             <Plus className="w-4 h-4" /> Add New Product
           </button>
@@ -321,15 +316,15 @@ export default function AdminProductsPage() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-zinc-900/60 border border-zinc-800/80 p-4 rounded-2xl flex flex-col md:flex-row gap-4 justify-between items-center">
+      <div className="bg-white border border-[#EAE1D1] p-4 rounded-2xl flex flex-col md:flex-row gap-4 justify-between items-center">
         <div className="relative w-full md:w-96">
-          <Search className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#8C7E72] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search by name, SKU, or tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-zinc-950 border border-zinc-800 text-zinc-200 text-xs rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:border-amber-400/50 transition-colors"
+            className="w-full bg-[#FAF8F5] border border-[#EAE1D1] text-[#2D2319] text-xs rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:border-[#B8860B]/50 transition-colors"
           />
         </div>
 
@@ -337,7 +332,7 @@ export default function AdminProductsPage() {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-zinc-950 border border-zinc-800 text-zinc-300 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-amber-400/50 transition-colors"
+            className="bg-[#FAF8F5] border border-[#EAE1D1] text-[#3D342B] text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#B8860B]/50 transition-colors"
           >
             <option value="all">All Categories</option>
             {categories.map((c) => (
@@ -350,10 +345,10 @@ export default function AdminProductsPage() {
       </div>
 
       {/* Products Table */}
-      <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl overflow-hidden shadow-xl">
+      <div className="bg-white border border-[#EAE1D1] rounded-2xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-zinc-300">
-            <thead className="bg-zinc-900/90 text-zinc-400 font-semibold border-b border-zinc-800 uppercase tracking-wider text-[10px]">
+          <table className="w-full text-left text-xs text-[#3D342B]">
+            <thead className="bg-[#FAF7F2] text-[#6B6055] font-semibold border-b border-[#EAE1D1] uppercase tracking-wider text-[10px]">
               <tr>
                 <th className="py-3.5 px-4">Item</th>
                 <th className="py-3.5 px-4">Category</th>
@@ -364,10 +359,10 @@ export default function AdminProductsPage() {
                 <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800/50">
+            <tbody className="divide-y divide-[#EAE1D1]">
               {filteredProducts.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-zinc-500">
+                  <td colSpan={7} className="py-12 text-center text-[#8C7E72]">
                     {isLoading ? 'Loading catalog products...' : 'No products found matching criteria.'}
                   </td>
                 </tr>
@@ -383,29 +378,29 @@ export default function AdminProductsPage() {
                   return (
                     <tr
                       key={product._id}
-                      className="hover:bg-zinc-800/30 transition-colors group"
+                      className="hover:bg-[#FAF7F2]/60 transition-colors group"
                     >
                       {/* Product Thumbnail & Name */}
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-xl bg-zinc-950 border border-zinc-800 relative overflow-hidden flex-shrink-0">
-                            <Image
+                          <div className="w-12 h-12 rounded-xl bg-[#FAF8F5] border border-[#EAE1D1] relative overflow-hidden flex-shrink-0">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
                               src={mainImg}
                               alt={product.name}
-                              fill
-                              className="object-cover"
+                              className="w-full h-full object-cover"
                             />
                           </div>
                           <div>
-                            <p className="font-bold text-white text-xs hover:text-amber-400 transition-colors line-clamp-1">
+                            <p className="font-bold text-[#18140B] text-xs hover:text-[#B8860B] transition-colors line-clamp-1">
                               {product.name}
                             </p>
-                            <span className="text-[10px] font-mono text-zinc-500">
+                            <span className="text-[10px] font-mono text-[#8C7E72]">
                               SKU: {product.sku}
                             </span>
                             <div className="flex gap-1.5 mt-0.5">
                               {product.featured && (
-                                <span className="text-[9px] bg-amber-950/80 text-amber-400 border border-amber-800/50 px-1 rounded">
+                                <span className="text-[9px] bg-amber-950/80 text-[#B8860B] border border-amber-800/50 px-1 rounded">
                                   Featured
                                 </span>
                               )}
@@ -421,16 +416,16 @@ export default function AdminProductsPage() {
 
                       {/* Category */}
                       <td className="py-3 px-4">
-                        <span className="bg-zinc-800/70 text-zinc-300 px-2.5 py-1 rounded-lg text-[11px] font-medium border border-zinc-700/40">
+                        <span className="bg-[#F5EFEB] border border-[#EAE1D1] text-[#3D342B] px-2.5 py-1 rounded-lg text-[11px] font-medium border border-[#EAE1D1]">
                           {catName}
                         </span>
                       </td>
 
                       {/* Pricing */}
                       <td className="py-3 px-4 font-mono font-semibold">
-                        <div className="text-white text-xs">{formatCurrency(product.price)}</div>
+                        <div className="text-[#18140B] text-xs">{formatCurrency(product.price)}</div>
                         {product.compareAtPrice && product.compareAtPrice > product.price && (
-                          <div className="text-[10px] text-zinc-500 line-through">
+                          <div className="text-[10px] text-[#8C7E72] line-through">
                             {formatCurrency(product.compareAtPrice)}
                           </div>
                         )}
@@ -453,8 +448,8 @@ export default function AdminProductsPage() {
                               product.stock === 0
                                 ? 'text-rose-400'
                                 : product.stock <= 5
-                                ? 'text-amber-400'
-                                : 'text-zinc-200'
+                                ? 'text-[#B8860B]'
+                                : 'text-[#2D2319]'
                             }`}
                           >
                             {product.stock} units
@@ -465,8 +460,8 @@ export default function AdminProductsPage() {
                       {/* Variants Count */}
                       <td className="py-3 px-4">
                         {product.variants && product.variants.length > 0 ? (
-                          <span className="flex items-center gap-1.5 text-zinc-400 text-[11px]">
-                            <Layers className="w-3.5 h-3.5 text-amber-400" />
+                          <span className="flex items-center gap-1.5 text-[#6B6055] text-[11px]">
+                            <Layers className="w-3.5 h-3.5 text-[#B8860B]" />
                             {product.variants.length} SKUs
                           </span>
                         ) : (
@@ -479,8 +474,8 @@ export default function AdminProductsPage() {
                         <span
                           className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${
                             product.isActive
-                              ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800/40'
-                              : 'bg-zinc-800 text-zinc-500 border border-zinc-700'
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              : 'bg-[#F5EFEB] text-[#18140B] border border-[#EAE1D1] text-[#8C7E72] border border-[#EAE1D1]'
                           }`}
                         >
                           <span
@@ -499,21 +494,21 @@ export default function AdminProductsPage() {
                             href={`${process.env.NEXT_PUBLIC_STOREFRONT_URL || 'http://localhost:3000'}/product/${product.slug}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+                            className="p-1.5 rounded-lg text-[#6B6055] hover:text-[#18140B] hover:bg-[#F5EFEB] transition-colors"
                             title="Preview on Store"
                           >
                             <ExternalLink className="w-3.5 h-3.5" />
                           </a>
                           <button
                             onClick={() => openEditModal(product)}
-                            className="p-1.5 rounded-lg text-zinc-400 hover:text-amber-400 hover:bg-zinc-800 transition-colors"
+                            className="p-1.5 rounded-lg text-[#6B6055] hover:text-[#B8860B] hover:bg-[#F5EFEB] transition-colors"
                             title="Edit Product"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => setDeleteConfirmId(product._id)}
-                            className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-400 hover:bg-rose-950/30 transition-colors"
+                            className="p-1.5 rounded-lg text-[#6B6055] hover:text-rose-400 hover:bg-rose-50 transition-colors"
                             title="Delete Product"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -531,26 +526,26 @@ export default function AdminProductsPage() {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirmId && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-[#EAE1D1] rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
             <div className="flex items-center gap-3 text-rose-400">
               <AlertCircle className="w-6 h-6 flex-shrink-0" />
-              <h3 className="font-bold text-white text-sm">Delete Product?</h3>
+              <h3 className="font-bold text-[#18140B] text-sm">Delete Product?</h3>
             </div>
-            <p className="text-xs text-zinc-400 leading-relaxed">
+            <p className="text-xs text-[#6B6055] leading-relaxed">
               Are you sure you want to permanently remove this product and all associated variants from
               the database? This action cannot be undone.
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 onClick={() => setDeleteConfirmId(null)}
-                className="px-3.5 py-2 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+                className="px-3.5 py-2 rounded-xl text-xs font-semibold text-[#6B6055] hover:text-[#18140B] hover:bg-[#F5EFEB] transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleDeleteProduct(deleteConfirmId)}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-500 hover:bg-rose-600 text-white transition-all shadow-md"
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-500 hover:bg-rose-600 text-[#18140B] transition-all shadow-md"
               >
                 Delete Product
               </button>
@@ -561,21 +556,21 @@ export default function AdminProductsPage() {
 
       {/* Create / Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-4xl w-full p-6 space-y-6 shadow-2xl my-8 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white border border-[#EAE1D1] rounded-2xl max-w-4xl w-full p-6 space-y-6 shadow-2xl my-8 max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+            <div className="flex items-center justify-between border-b border-[#EAE1D1] pb-4">
               <div>
-                <h2 className="text-lg font-black text-white">
+                <h2 className="text-lg font-black text-[#18140B]">
                   {editingProduct ? 'Edit Product Specifications' : 'Create New Product'}
                 </h2>
-                <p className="text-xs text-zinc-400">
+                <p className="text-xs text-[#6B6055]">
                   Fill in product details, variants, inventory, and visual assets.
                 </p>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+                className="p-2 rounded-lg text-[#6B6055] hover:text-[#18140B] hover:bg-[#F5EFEB] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -584,13 +579,13 @@ export default function AdminProductsPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Section 1: Core Details */}
               <div className="space-y-4">
-                <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                <h3 className="text-xs font-bold text-[#B8860B] uppercase tracking-wider flex items-center gap-2">
                   <Tag className="w-3.5 h-3.5" /> 1. Core Identification
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                    <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                       Product Name *
                     </label>
                     <input
@@ -599,19 +594,19 @@ export default function AdminProductsPage() {
                       placeholder="e.g. Master Chronograph Automatic Watch"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400/50"
+                      className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3.5 py-2.5 text-xs text-[#18140B] focus:outline-none focus:border-[#B8860B]/50"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                    <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                       Category *
                     </label>
                     <select
                       value={formData.category}
                       onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                       required
-                      className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400/50"
+                      className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3.5 py-2.5 text-xs text-[#18140B] focus:outline-none focus:border-[#B8860B]/50"
                     >
                       <option value="">Select Category...</option>
                       {categories.map((c) => (
@@ -625,7 +620,7 @@ export default function AdminProductsPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                    <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                       Base SKU
                     </label>
                     <input
@@ -633,12 +628,12 @@ export default function AdminProductsPage() {
                       placeholder="e.g. EF-WATCH-001"
                       value={formData.sku}
                       onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
-                      className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-amber-400/50"
+                      className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3.5 py-2.5 text-xs font-mono text-[#18140B] focus:outline-none focus:border-[#B8860B]/50"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                    <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                       Short Tagline / Overview
                     </label>
                     <input
@@ -646,13 +641,13 @@ export default function AdminProductsPage() {
                       placeholder="Brief one-liner summary"
                       value={formData.shortDescription}
                       onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
-                      className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400/50"
+                      className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3.5 py-2.5 text-xs text-[#18140B] focus:outline-none focus:border-[#B8860B]/50"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                  <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                     Full Description
                   </label>
                   <textarea
@@ -660,20 +655,20 @@ export default function AdminProductsPage() {
                     placeholder="Full product editorial story, materials, craft, care instructions..."
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-amber-400/50 leading-relaxed"
+                    className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl p-3 text-xs text-[#18140B] focus:outline-none focus:border-[#B8860B]/50 leading-relaxed"
                   />
                 </div>
               </div>
 
               {/* Section 2: Pricing & Stock */}
-              <div className="space-y-4 pt-4 border-t border-zinc-800">
-                <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+              <div className="space-y-4 pt-4 border-t border-[#EAE1D1]">
+                <h3 className="text-xs font-bold text-[#B8860B] uppercase tracking-wider flex items-center gap-2">
                   <IndianRupee className="w-3.5 h-3.5" /> 2. Pricing & Base Inventory
                 </h3>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
-                    <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                    <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                       Selling Price (₹) *
                     </label>
                     <input
@@ -683,12 +678,12 @@ export default function AdminProductsPage() {
                       required
                       value={formData.price}
                       onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
-                      className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-amber-400/50"
+                      className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3.5 py-2.5 text-xs font-mono text-[#18140B] focus:outline-none focus:border-[#B8860B]/50"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                    <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                       Compare at Price (₹)
                     </label>
                     <input
@@ -697,12 +692,12 @@ export default function AdminProductsPage() {
                       min="0"
                       value={formData.compareAtPrice}
                       onChange={(e) => setFormData({ ...formData, compareAtPrice: parseFloat(e.target.value) || 0 })}
-                      className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-amber-400/50"
+                      className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3.5 py-2.5 text-xs font-mono text-[#18140B] focus:outline-none focus:border-[#B8860B]/50"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                    <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                       Base Stock (Units) *
                     </label>
                     <input
@@ -711,12 +706,12 @@ export default function AdminProductsPage() {
                       required
                       value={formData.stock}
                       onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value, 10) || 0 })}
-                      className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-amber-400/50"
+                      className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3.5 py-2.5 text-xs font-mono text-[#18140B] focus:outline-none focus:border-[#B8860B]/50"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                    <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                       Low Stock Alert
                     </label>
                     <input
@@ -724,149 +719,87 @@ export default function AdminProductsPage() {
                       min="1"
                       value={formData.lowStockThreshold}
                       onChange={(e) => setFormData({ ...formData, lowStockThreshold: parseInt(e.target.value, 10) || 3 })}
-                      className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-amber-400/50"
+                      className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3.5 py-2.5 text-xs font-mono text-[#18140B] focus:outline-none focus:border-[#B8860B]/50"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Section 3: Gallery Management */}
-              <div className="space-y-4 pt-4 border-t border-zinc-800">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
-                    <ImageIcon className="w-3.5 h-3.5" /> 3. Visual Gallery & Assets
-                  </h3>
-                  <span className="text-[11px] text-zinc-500">
-                    {formData.images.length} Photos Attached
-                  </span>
-                </div>
-
-                <div className="flex gap-2">
-                  <input
-                    type="url"
-                    placeholder="Paste high-res image URL (e.g. Unsplash, CDN)"
-                    value={newImageUrl}
-                    onChange={(e) => setNewImageUrl(e.target.value)}
-                    className="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-amber-400/50"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleAddImage}
-                    className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl text-xs font-semibold transition-colors"
-                  >
-                    Add Image
-                  </button>
-                </div>
-
-                {/* Thumbnails preview */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
-                  {formData.images.map((img, idx) => (
-                    <div
-                      key={idx}
-                      className={`relative group rounded-xl overflow-hidden border aspect-square bg-zinc-950 ${
-                        img.isMain ? 'border-amber-400 ring-2 ring-amber-400/20' : 'border-zinc-800'
-                      }`}
-                    >
-                      <Image
-                        src={img.url}
-                        alt="Product preview"
-                        fill
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-1">
-                        {!img.isMain && (
-                          <button
-                            type="button"
-                            onClick={() => handleSetPrimaryImage(idx)}
-                            className="p-1 bg-amber-400 text-zinc-950 rounded text-[9px] font-bold"
-                            title="Set as Main Image"
-                          >
-                            Main
-                          </button>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveImage(idx)}
-                          className="p-1 bg-rose-500 text-white rounded text-[9px]"
-                          title="Remove Image"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                        </button>
-                      </div>
-                      {img.isMain && (
-                        <div className="absolute bottom-1 left-1 bg-amber-400 text-zinc-950 text-[8px] font-black px-1 rounded uppercase tracking-wider">
-                          Cover
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+              <div className="pt-4 border-t border-[#EAE1D1]">
+                <MultiImageUpload
+                  images={formData.images}
+                  onChange={(images) => setFormData((prev) => ({ ...prev, images }))}
+                  productName={formData.name || 'Product'}
+                  label="3. Visual Gallery & Product Media"
+                  maxImages={12}
+                />
               </div>
 
               {/* Section 4: Variant Builder */}
-              <div className="space-y-4 pt-4 border-t border-zinc-800">
-                <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+              <div className="space-y-4 pt-4 border-t border-[#EAE1D1]">
+                <h3 className="text-xs font-bold text-[#B8860B] uppercase tracking-wider flex items-center gap-2">
                   <Layers className="w-3.5 h-3.5" /> 4. Multi-SKU Variant Builder
                 </h3>
 
                 {/* Inline adder */}
-                <div className="p-4 bg-zinc-950/60 border border-zinc-800 rounded-xl space-y-3">
-                  <p className="text-[11px] text-zinc-400 font-medium">Add Size, Color & Stock Variant:</p>
+                <div className="p-4 bg-[#FAF7F2] border border-[#EAE1D1] rounded-xl space-y-3">
+                  <p className="text-[11px] text-[#6B6055] font-medium">Add Size, Color & Stock Variant:</p>
                   <div className="grid grid-cols-2 sm:grid-cols-6 gap-2.5">
                     <div>
-                      <label className="text-[10px] text-zinc-500 block mb-1">Size</label>
+                      <label className="text-[10px] text-[#8C7E72] block mb-1">Size</label>
                       <input
                         type="text"
                         placeholder="S, M, L, 42mm..."
                         value={variantSize}
                         onChange={(e) => setVariantSize(e.target.value)}
-                        className="w-full bg-zinc-900 border border-zinc-800 text-xs text-white rounded-lg px-2.5 py-1.5"
+                        className="w-full bg-white border border-[#EAE1D1] text-xs text-[#18140B] rounded-lg px-2.5 py-1.5"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-zinc-500 block mb-1">Color Name</label>
+                      <label className="text-[10px] text-[#8C7E72] block mb-1">Color Name</label>
                       <input
                         type="text"
                         placeholder="e.g. Noir"
                         value={variantColor}
                         onChange={(e) => setVariantColor(e.target.value)}
-                        className="w-full bg-zinc-900 border border-zinc-800 text-xs text-white rounded-lg px-2.5 py-1.5"
+                        className="w-full bg-white border border-[#EAE1D1] text-xs text-[#18140B] rounded-lg px-2.5 py-1.5"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-zinc-500 block mb-1">Color Swatch</label>
+                      <label className="text-[10px] text-[#8C7E72] block mb-1">Color Swatch</label>
                       <input
                         type="color"
                         value={variantColorHex}
                         onChange={(e) => setVariantColorHex(e.target.value)}
-                        className="w-full h-8 bg-zinc-900 border border-zinc-800 rounded-lg cursor-pointer p-0.5"
+                        className="w-full h-8 bg-white border border-[#EAE1D1] rounded-lg cursor-pointer p-0.5"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-zinc-500 block mb-1">Variant Price (₹)</label>
+                      <label className="text-[10px] text-[#8C7E72] block mb-1">Variant Price (₹)</label>
                       <input
                         type="number"
                         placeholder="0 = default"
                         value={variantPrice || ''}
                         onChange={(e) => setVariantPrice(parseFloat(e.target.value) || 0)}
-                        className="w-full bg-zinc-900 border border-zinc-800 text-xs font-mono text-white rounded-lg px-2.5 py-1.5"
+                        className="w-full bg-white border border-[#EAE1D1] text-xs font-mono text-[#18140B] rounded-lg px-2.5 py-1.5"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-zinc-500 block mb-1">Stock</label>
+                      <label className="text-[10px] text-[#8C7E72] block mb-1">Stock</label>
                       <input
                         type="number"
                         min="0"
                         value={variantStock}
                         onChange={(e) => setVariantStock(parseInt(e.target.value, 10) || 0)}
-                        className="w-full bg-zinc-900 border border-zinc-800 text-xs font-mono text-white rounded-lg px-2.5 py-1.5"
+                        className="w-full bg-white border border-[#EAE1D1] text-xs font-mono text-[#18140B] rounded-lg px-2.5 py-1.5"
                       />
                     </div>
                     <div className="flex items-end">
                       <button
                         type="button"
                         onClick={handleAddVariant}
-                        className="w-full bg-zinc-800 hover:bg-zinc-700 text-amber-400 font-bold text-xs py-2 rounded-lg transition-colors"
+                        className="w-full bg-[#F5EFEB] text-[#18140B] border border-[#EAE1D1] hover:bg-zinc-700 text-[#B8860B] font-bold text-xs py-2 rounded-lg transition-colors"
                       >
                         + Add Variant
                       </button>
@@ -877,28 +810,28 @@ export default function AdminProductsPage() {
                 {/* Existing variants chips */}
                 {formData.variants.length > 0 && (
                   <div className="space-y-2">
-                    <p className="text-[11px] text-zinc-400">Active Variants ({formData.variants.length}):</p>
+                    <p className="text-[11px] text-[#6B6055]">Active Variants ({formData.variants.length}):</p>
                     <div className="flex flex-wrap gap-2">
                       {formData.variants.map((v, i) => (
                         <div
                           key={i}
-                          className="flex items-center gap-2 bg-zinc-950 border border-zinc-800 px-3 py-1.5 rounded-xl text-xs"
+                          className="flex items-center gap-2 bg-[#FAF8F5] border border-[#EAE1D1] px-3 py-1.5 rounded-xl text-xs"
                         >
                           <div
-                            className="w-3 h-3 rounded-full border border-zinc-700"
+                            className="w-3 h-3 rounded-full border border-[#EAE1D1]"
                             style={{ backgroundColor: v.attributes?.colorHex || '#555' }}
                           />
-                          <span className="text-white font-semibold">{v.attributes?.size}</span>
-                          <span className="text-zinc-500">/</span>
-                          <span className="text-zinc-300">{v.attributes?.color}</span>
-                          <span className="font-mono text-amber-400 text-[11px]">
+                          <span className="text-[#18140B] font-semibold">{v.attributes?.size}</span>
+                          <span className="text-[#8C7E72]">/</span>
+                          <span className="text-[#3D342B]">{v.attributes?.color}</span>
+                          <span className="font-mono text-[#B8860B] text-[11px]">
                             {formatCurrency(v.price || formData.price)}
                           </span>
-                          <span className="text-[10px] text-zinc-500">({v.stock} pcs)</span>
+                          <span className="text-[10px] text-[#8C7E72]">({v.stock} pcs)</span>
                           <button
                             type="button"
                             onClick={() => handleRemoveVariant(i)}
-                            className="text-zinc-500 hover:text-rose-400 ml-1"
+                            className="text-[#8C7E72] hover:text-rose-400 ml-1"
                           >
                             <X className="w-3 h-3" />
                           </button>
@@ -910,55 +843,55 @@ export default function AdminProductsPage() {
               </div>
 
               {/* Section 5: Flags & Tags */}
-              <div className="space-y-4 pt-4 border-t border-zinc-800">
-                <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+              <div className="space-y-4 pt-4 border-t border-[#EAE1D1]">
+                <h3 className="text-xs font-bold text-[#B8860B] uppercase tracking-wider flex items-center gap-2">
                   <Sparkles className="w-3.5 h-3.5" /> 5. Discovery Badges & Tags
                 </h3>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <label className="flex items-center gap-2.5 bg-zinc-950 border border-zinc-800 p-3 rounded-xl cursor-pointer hover:border-zinc-700">
+                  <label className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#EAE1D1] p-3 rounded-xl cursor-pointer hover:border-[#EAE1D1]">
                     <input
                       type="checkbox"
                       checked={formData.isActive}
                       onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                      className="rounded accent-amber-400 w-4 h-4"
+                      className="rounded accent-[#B8860B] w-4 h-4"
                     />
-                    <span className="text-xs font-semibold text-white">Live in Catalog</span>
+                    <span className="text-xs font-semibold text-[#18140B]">Live in Catalog</span>
                   </label>
 
-                  <label className="flex items-center gap-2.5 bg-zinc-950 border border-zinc-800 p-3 rounded-xl cursor-pointer hover:border-zinc-700">
+                  <label className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#EAE1D1] p-3 rounded-xl cursor-pointer hover:border-[#EAE1D1]">
                     <input
                       type="checkbox"
                       checked={formData.featured}
                       onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                      className="rounded accent-amber-400 w-4 h-4"
+                      className="rounded accent-[#B8860B] w-4 h-4"
                     />
-                    <span className="text-xs font-semibold text-white">Featured Home</span>
+                    <span className="text-xs font-semibold text-[#18140B]">Featured Home</span>
                   </label>
 
-                  <label className="flex items-center gap-2.5 bg-zinc-950 border border-zinc-800 p-3 rounded-xl cursor-pointer hover:border-zinc-700">
+                  <label className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#EAE1D1] p-3 rounded-xl cursor-pointer hover:border-[#EAE1D1]">
                     <input
                       type="checkbox"
                       checked={formData.bestSeller}
                       onChange={(e) => setFormData({ ...formData, bestSeller: e.target.checked })}
-                      className="rounded accent-amber-400 w-4 h-4"
+                      className="rounded accent-[#B8860B] w-4 h-4"
                     />
-                    <span className="text-xs font-semibold text-white">Best Seller</span>
+                    <span className="text-xs font-semibold text-[#18140B]">Best Seller</span>
                   </label>
 
-                  <label className="flex items-center gap-2.5 bg-zinc-950 border border-zinc-800 p-3 rounded-xl cursor-pointer hover:border-zinc-700">
+                  <label className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#EAE1D1] p-3 rounded-xl cursor-pointer hover:border-[#EAE1D1]">
                     <input
                       type="checkbox"
                       checked={formData.newArrival}
                       onChange={(e) => setFormData({ ...formData, newArrival: e.target.checked })}
-                      className="rounded accent-amber-400 w-4 h-4"
+                      className="rounded accent-[#B8860B] w-4 h-4"
                     />
-                    <span className="text-xs font-semibold text-white">New Arrival</span>
+                    <span className="text-xs font-semibold text-[#18140B]">New Arrival</span>
                   </label>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5">
+                  <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                     Search Tags (comma-separated)
                   </label>
                   <input
@@ -966,24 +899,24 @@ export default function AdminProductsPage() {
                     placeholder="leather, mechanical, gold, luxury, minimalist"
                     value={tagsInput}
                     onChange={(e) => setTagsInput(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400/50"
+                    className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3.5 py-2.5 text-xs text-[#18140B] focus:outline-none focus:border-[#B8860B]/50"
                   />
                 </div>
               </div>
 
               {/* Submit Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-6 border-t border-zinc-800">
+              <div className="flex items-center justify-end gap-3 pt-6 border-t border-[#EAE1D1]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-[#6B6055] hover:text-[#18140B] hover:bg-[#F5EFEB] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-6 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold text-xs transition-all shadow-lg active:scale-95 disabled:opacity-50"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B8860B] hover:brightness-105 text-[#18140B] shadow-sm font-bold text-xs transition-all shadow-lg active:scale-95 disabled:opacity-50"
                 >
                   {isSubmitting ? 'Saving to Database...' : editingProduct ? 'Save Changes' : 'Publish Product'}
                 </button>

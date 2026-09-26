@@ -11,6 +11,16 @@ const config: Config = {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
+        brand: {
+          cream: '#FAF8F5',
+          ivory: '#FAF7F2',
+          gold: '#B8860B',
+          'gold-light': '#FBF7EE',
+          'gold-border': '#EAE1D1',
+          dark: '#18140B',
+          muted: '#6B6055',
+          emerald: '#0D2E20',
+        },
         admin: {
           50: '#f8fafc',
           100: '#f1f5f9',
