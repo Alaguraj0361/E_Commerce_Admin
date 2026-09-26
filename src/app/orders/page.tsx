@@ -315,7 +315,16 @@ export default function AdminOrdersPage() {
                         <p className="font-mono font-bold text-[#18140B] text-xs">
                           {formatCurrency(order.total)}
                         </p>
-                        <div className="mt-0.5">{getPaymentBadge(order.paymentStatus)}</div>
+                        <div className="mt-1 flex items-center gap-1.5 flex-wrap">
+                          {getPaymentBadge(order.paymentStatus)}
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-[#6B6055] bg-[#FAF8F5] px-1.5 py-0.5 rounded border border-[#EAE1D1]">
+                            {order.paymentMethod === 'razorpay'
+                              ? 'UPI / Online'
+                              : order.paymentMethod === 'cod'
+                              ? 'COD'
+                              : order.paymentMethod}
+                          </span>
+                        </div>
                       </td>
 
                       {/* Fulfillment Status */}
@@ -534,6 +543,22 @@ export default function AdminOrdersPage() {
                       {formatCurrency(selectedOrder.total)}
                     </span>
                   </div>
+                  <div className="flex justify-between items-center text-xs pt-1 text-[#6B6055]">
+                    <span>Payment Method:</span>
+                    <span className="font-semibold text-[#18140B]">
+                      {selectedOrder.paymentMethod === 'razorpay'
+                        ? 'UPI & Online (Razorpay)'
+                        : selectedOrder.paymentMethod === 'cod'
+                        ? 'Cash on Delivery (COD)'
+                        : selectedOrder.paymentMethod}
+                    </span>
+                  </div>
+                  {selectedOrder.razorpayPaymentId && (
+                    <div className="flex justify-between items-center text-[11px] font-mono text-[#8C7E72]">
+                      <span>Payment Ref:</span>
+                      <span>{selectedOrder.razorpayPaymentId}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
