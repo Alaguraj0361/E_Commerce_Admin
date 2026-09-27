@@ -45,11 +45,11 @@ export const AdminSidebar = () => {
         {/* Brand */}
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#D4AF37] via-[#B8860B] to-[#996D00] text-white flex items-center justify-center font-black text-sm shadow-md tracking-wider">
-            EF
+            NF
           </div>
           <div>
             <h1 className="text-sm font-black uppercase tracking-wider text-[#18140B]">
-              EFFIDOO <span className="text-[#B8860B] font-mono text-xs">ADMIN</span>
+              NALMARA FASHION <span className="text-[#B8860B] font-mono text-xs">ADMIN</span>
             </h1>
             <p className="text-[10px] text-[#7A6E63] font-medium">Operations Console</p>
           </div>

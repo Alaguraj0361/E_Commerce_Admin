@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'EFFIDOO Admin | Operations Command Center',
+  title: 'NALMARA FASHION Admin | Operations Command Center',
   description: 'Executive Management Console for products, orders, coupons, and analytics.',
 };
 
