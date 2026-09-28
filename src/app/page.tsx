@@ -137,30 +137,32 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* 1. Stat Cards Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
         {statCards.map((stat, i) => {
           const Icon = stat.icon;
           return (
             <div
               key={i}
-              className="p-5 bg-white rounded-2xl border border-[#EAE1D1] shadow-sm flex flex-col justify-between"
+              className="p-3.5 sm:p-4 bg-white rounded-2xl border border-[#EAE1D1] shadow-xs flex flex-col justify-between"
             >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#6B6055]">
+              <div className="flex items-start justify-between gap-2 mb-2 sm:mb-3">
+                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#6B6055] leading-snug">
                   {stat.title}
                 </span>
-                <div className={`p-2 rounded-xl border ${stat.bg} ${stat.color}`}>
-                  <Icon className="w-4 h-4" />
+                <div className={`p-1.5 sm:p-2 rounded-xl border ${stat.bg} ${stat.color} flex-shrink-0`}>
+                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </div>
               </div>
-              <span className="text-2xl font-black text-[#18140B]">{stat.value}</span>
+              <span className="text-base sm:text-xl font-black text-[#18140B] tracking-tight">
+                {stat.value}
+              </span>
             </div>
           );
         })}
       </div>
 
       {/* 2. 7-Day Sales Volume Graph */}
-      <div className="p-6 sm:p-8 bg-white rounded-3xl border border-[#EAE1D1] shadow-sm space-y-6">
+      <div className="p-4 sm:p-6 lg:p-8 bg-white rounded-3xl border border-[#EAE1D1] shadow-xs space-y-4 sm:space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <span className="text-[11px] uppercase font-bold text-[#7A6E63]">Cash Flow Analytics</span>

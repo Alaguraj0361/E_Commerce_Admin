@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
@@ -14,6 +15,7 @@ import {
   ExternalLink,
   LogOut,
   ShieldCheck,
+  X,
 } from 'lucide-react';
 import { useAdminAuthStore } from '../../store/adminAuthStore';
 
@@ -27,32 +29,71 @@ const navigation = [
   { name: 'Review Moderation', href: '/reviews', icon: MessageSquareQuote },
 ];
 
-export const AdminSidebar = () => {
+interface AdminSidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export const AdminSidebar = ({ isOpen = false, onClose }: AdminSidebarProps) => {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAdminAuthStore();
 
   const handleLogout = async () => {
     await logout();
+    if (onClose) onClose();
     router.push('/login');
+  };
+
+  const handleLinkClick = () => {
+    if (onClose) onClose();
   };
 
   const storefrontUrl = process.env.NEXT_PUBLIC_STOREFRONT_URL || 'http://localhost:3000';
 
   return (
-    <aside className="w-64 bg-[#FAF7F2] border-r border-[#EAE1D1] flex flex-col justify-between h-screen sticky top-0 flex-shrink-0 shadow-[2px_0_12px_rgba(0,0,0,0.02)]">
-      <div className="p-6 space-y-8">
-        {/* Brand */}
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#D4AF37] via-[#B8860B] to-[#996D00] text-white flex items-center justify-center font-black text-sm shadow-md tracking-wider">
-            NF
-          </div>
-          <div>
-            <h1 className="text-sm font-black uppercase tracking-wider text-[#18140B]">
-              NALMARA FASHION <span className="text-[#B8860B] font-mono text-xs">ADMIN</span>
-            </h1>
-            <p className="text-[10px] text-[#7A6E63] font-medium">Operations Console</p>
-          </div>
+    <aside
+      className={`fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] bg-[#FAF7F2] border-r border-[#EAE1D1] flex flex-col justify-between h-screen transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-[2px_0_12px_rgba(0,0,0,0.02)] lg:static lg:w-64 lg:h-screen lg:sticky lg:top-0 lg:flex-shrink-0 ${
+        isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      }`}
+    >
+      <div className="p-5 sm:p-6 space-y-6 sm:space-y-8 overflow-y-auto">
+        {/* Brand Header with Mobile Close Button */}
+        <div className="flex items-center justify-between">
+          <Link href="/" onClick={handleLinkClick} className="flex items-center gap-3 group">
+            <div className="w-11 h-11 relative flex-shrink-0 drop-shadow-md group-hover:scale-105 transition-transform duration-200">
+              <Image
+                src="/images/nalmara_emblem.png"
+                alt="NALMARA"
+                width={44}
+                height={44}
+                priority
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-black uppercase tracking-wider text-[#18140B] font-serif truncate">
+                  NALMARA
+                </span>
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100/90 text-amber-900 border border-amber-300 font-mono tracking-wider">
+                  ADMIN
+                </span>
+              </div>
+              <p className="text-[10px] text-[#7A6E63] font-medium tracking-wide">
+                Operations Console
+              </p>
+            </div>
+          </Link>
+
+          <button
+            onClick={onClose}
+            className="p-2 rounded-xl text-[#6B6055] hover:text-[#18140B] hover:bg-[#F2ECE3] lg:hidden transition-colors"
+            title="Close navigation menu"
+            aria-label="Close navigation"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Navigation */}
@@ -64,6 +105,7 @@ export const AdminSidebar = () => {
               <Link
                 key={item.name}
                 href={item.href}
+                onClick={handleLinkClick}
                 className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium transition-all ${
                   isActive
                     ? 'bg-white text-[#18140B] font-semibold shadow-sm border border-[#E0D5C3]'

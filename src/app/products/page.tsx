@@ -347,7 +347,7 @@ export default function AdminProductsPage() {
       {/* Products Table */}
       <div className="bg-white border border-[#EAE1D1] rounded-2xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-[#3D342B]">
+          <table className="w-full text-left text-xs text-[#3D342B] min-w-[760px]">
             <thead className="bg-[#FAF7F2] text-[#6B6055] font-semibold border-b border-[#EAE1D1] uppercase tracking-wider text-[10px]">
               <tr>
                 <th className="py-3.5 px-4">Item</th>

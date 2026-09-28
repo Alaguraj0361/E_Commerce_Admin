@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Lock, Mail, ShieldCheck, Loader2, KeyRound } from 'lucide-react';
 import { api } from '../../lib/api';
 import { useAdminAuthStore } from '../../store/adminAuthStore';
@@ -53,14 +54,27 @@ export default function AdminLoginPage() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-[#FAF8F5]">
       <div className="max-w-md w-full bg-white border border-[#EAE1D1] rounded-3xl p-8 sm:p-10 shadow-xl space-y-8">
         {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#D4AF37] via-[#B8860B] to-[#996D00] text-white flex items-center justify-center font-black text-lg mx-auto mb-4 shadow-md tracking-wider">
-            NF
+        <div className="text-center space-y-3">
+          <div className="w-20 h-20 mx-auto relative drop-shadow-md">
+            <Image
+              src="/images/nalmara_emblem.png"
+              alt="NALMARA FASHION"
+              width={80}
+              height={80}
+              priority
+              className="w-full h-full object-contain"
+            />
           </div>
-          <h1 className="text-2xl font-black uppercase tracking-wider text-[#18140B]">
-            NALMARA FASHION <span className="text-[#B8860B] font-mono">ADMIN</span>
-          </h1>
-          <p className="text-xs text-[#7A6E63]">
+          <div>
+            <h1 className="text-2xl font-black uppercase tracking-wider text-[#18140B] font-serif">
+              NALMARA FASHION <span className="text-[#B8860B] font-mono text-base font-bold">ADMIN</span>
+            </h1>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF1E3] border border-[#E3D3B5] text-[#8C6D1F] text-[11px] font-semibold tracking-wider uppercase font-mono mt-2 shadow-xs">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#B8860B]" />
+              Operations Command Center
+            </div>
+          </div>
+          <p className="text-xs text-[#7A6E63] pt-0.5">
             Internal Operations & Systems Management Portal
           </p>
         </div>

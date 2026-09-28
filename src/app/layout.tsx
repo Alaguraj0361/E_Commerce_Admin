@@ -12,6 +12,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'NALMARA FASHION Admin | Operations Command Center',
   description: 'Executive Management Console for products, orders, coupons, and analytics.',
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/images/nalmara_emblem.png', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/images/nalmara_emblem.png',
+  },
 };
 
 export default function RootLayout({
