@@ -17,6 +17,9 @@ import {
   CreditCard,
   X,
   FileText,
+  Trash2,
+  AlertCircle,
+  Loader2,
 } from 'lucide-react';
 import { api } from '../../lib/api';
 import { formatCurrency, formatDate } from '../../lib/utils';
@@ -45,6 +48,11 @@ export default function AdminOrdersPage() {
   const [trackingNumber, setTrackingNumber] = useState('');
   const [timelineNote, setTimelineNote] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
+
+  // Delete States
+  const [deleteConfirmOrder, setDeleteConfirmOrder] = useState<Order | null>(null);
+  const [showClearAllConfirm, setShowClearAllConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchOrders = async () => {
     try {
@@ -97,6 +105,43 @@ export default function AdminOrdersPage() {
       setIsUpdating(false);
     }
   };
+
+  const handleDeleteOrder = async (orderId: string) => {
+    setIsDeleting(true);
+    try {
+      const res = await api.delete(`/orders/admin/${orderId}`);
+      if (res.data?.success) {
+        toast.success('Order deleted successfully');
+        setOrders((prev) => prev.filter((o) => o._id !== orderId));
+        setDeleteConfirmOrder(null);
+        if (selectedOrder?._id === orderId) {
+          setSelectedOrder(null);
+        }
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to delete order');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleClearAllOrders = async () => {
+    setIsDeleting(true);
+    try {
+      const res = await api.delete('/orders/admin/clear-all');
+      if (res.data?.success) {
+        toast.success(res.data.message || 'All orders permanently deleted');
+        setOrders([]);
+        setShowClearAllConfirm(false);
+        setSelectedOrder(null);
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to clear all orders');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
 
   const filteredOrders = useMemo(() => {
     return orders.filter((o) => {
@@ -194,13 +239,24 @@ export default function AdminOrdersPage() {
           </p>
         </div>
 
-        <button
-          onClick={fetchOrders}
-          className="p-2.5 rounded-xl border border-[#EAE1D1] hover:border-[#EAE1D1] bg-white text-[#6B6055] hover:text-[#18140B] transition-colors self-start sm:self-auto"
-          title="Refresh List"
-        >
-          <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-        </button>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          {orders.length > 0 && (
+            <button
+              onClick={() => setShowClearAllConfirm(true)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold text-xs transition-colors shadow-2xs"
+              title="Clear all orders from database"
+            >
+              <Trash2 className="w-3.5 h-3.5" /> Clear All Orders
+            </button>
+          )}
+          <button
+            onClick={fetchOrders}
+            className="p-2.5 rounded-xl border border-[#EAE1D1] hover:border-[#EAE1D1] bg-white text-[#6B6055] hover:text-[#18140B] transition-colors"
+            title="Refresh List"
+          >
+            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+          </button>
+        </div>
       </div>
 
       {/* Filter and Tabs */}
@@ -343,15 +399,27 @@ export default function AdminOrdersPage() {
 
                       {/* Actions */}
                       <td className="py-3 px-4 text-right">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openOrderDetails(order);
-                          }}
-                          className="px-3 py-1.5 bg-[#F5EFEB] text-[#18140B] border border-[#EAE1D1] hover:bg-zinc-700 text-[#18140B] rounded-xl text-xs font-medium transition-colors"
-                        >
-                          Inspect
-                        </button>
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openOrderDetails(order);
+                            }}
+                            className="px-3 py-1.5 bg-[#FAF7F2] hover:bg-[#F2ECE3] border border-[#EAE1D1] text-[#18140B] rounded-xl text-xs font-semibold transition-colors"
+                          >
+                            Inspect
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeleteConfirmOrder(order);
+                            }}
+                            className="p-1.5 rounded-xl text-rose-500 hover:text-rose-700 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-colors"
+                            title="Delete Order Record"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -589,6 +657,102 @@ export default function AdminOrdersPage() {
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* Modal Actions Footer */}
+            <div className="flex items-center justify-between border-t border-[#EAE1D1] pt-4 mt-6">
+              <button
+                type="button"
+                onClick={() => setDeleteConfirmOrder(selectedOrder)}
+                className="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs"
+              >
+                <Trash2 className="w-3.5 h-3.5" /> Delete Order Record
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedOrder(null)}
+                className="px-4 py-2 rounded-xl bg-white hover:bg-[#FAF7F2] text-[#18140B] border border-[#EAE1D1] text-xs font-semibold transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Single Order Confirmation Modal */}
+      {deleteConfirmOrder && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-[#EAE1D1] rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+            <div className="flex items-center gap-3 text-rose-600">
+              <AlertCircle className="w-6 h-6 flex-shrink-0" />
+              <h3 className="font-bold text-[#18140B] text-sm">Delete Order?</h3>
+            </div>
+            <p className="text-xs text-[#6B6055] leading-relaxed">
+              Are you sure you want to permanently delete order{' '}
+              <span className="font-mono font-bold text-[#18140B]">
+                #{deleteConfirmOrder.orderNumber}
+              </span>
+              ? This action will remove the record from the database and cannot be undone.
+            </p>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={() => setDeleteConfirmOrder(null)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-[#6B6055] hover:text-[#18140B] hover:bg-[#FAF7F2] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={() => handleDeleteOrder(deleteConfirmOrder._id)}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 transition-colors shadow-sm flex items-center gap-1.5 disabled:opacity-50"
+              >
+                {isDeleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                Delete Order
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Clear All Orders Confirmation Modal */}
+      {showClearAllConfirm && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-[#EAE1D1] rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+            <div className="flex items-center gap-3 text-rose-600">
+              <AlertCircle className="w-6 h-6 flex-shrink-0" />
+              <h3 className="font-bold text-[#18140B] text-base">Clear All Orders?</h3>
+            </div>
+            <p className="text-xs text-[#6B6055] leading-relaxed">
+              Are you sure you want to permanently delete <strong className="text-[#18140B]">ALL ({orders.length}) orders</strong> from the database?
+              All order numbers, payment transactions, and shipping manifests will be permanently purged.
+            </p>
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-amber-900 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-700 flex-shrink-0" />
+              <span>This will also reset your total transactions and dashboard sales trajectory metrics.</span>
+            </div>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={() => setShowClearAllConfirm(false)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-[#6B6055] hover:text-[#18140B] hover:bg-[#FAF7F2] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={handleClearAllOrders}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 transition-colors shadow-sm flex items-center gap-1.5 disabled:opacity-50"
+              >
+                {isDeleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                Permanently Delete All
+              </button>
             </div>
           </div>
         </div>
