@@ -26,8 +26,17 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const message =
-      error.response?.data?.message || error.message || 'An administrative error occurred';
+    const errorData = error.response?.data;
+    let message = errorData?.message || error.message || 'An administrative error occurred';
+    if (errorData?.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+      const fieldErrors = errorData.errors
+        .map((e: any) => e.message || (e.field ? `${e.field} is invalid` : ''))
+        .filter(Boolean)
+        .join(', ');
+      if (fieldErrors) {
+        message = fieldErrors;
+      }
+    }
     return Promise.reject({ ...error, customMessage: message });
   }
 );

@@ -25,6 +25,15 @@ import { Product, Category, ProductVariant, ProductImage } from '../../types';
 import { toast } from 'sonner';
 import { MultiImageUpload } from '@/components/ui/ImageUpload';
 
+const slugify = (text: string): string => {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
+
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -35,6 +44,7 @@ export default function AdminProductsPage() {
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
@@ -106,6 +116,7 @@ export default function AdminProductsPage() {
 
   const openCreateModal = () => {
     setEditingProduct(null);
+    setIsSlugManuallyEdited(false);
     setFormData({
       ...initialFormState,
       category: categories[0]?._id || '',
@@ -117,10 +128,11 @@ export default function AdminProductsPage() {
 
   const openEditModal = (product: Product) => {
     setEditingProduct(product);
+    setIsSlugManuallyEdited(true);
     const catId = typeof product.category === 'object' ? product.category._id : product.category;
     setFormData({
       name: product.name,
-      slug: product.slug,
+      slug: product.slug || slugify(product.name),
       description: product.description,
       shortDescription: product.shortDescription || '',
       category: catId || '',
@@ -220,6 +232,8 @@ export default function AdminProductsPage() {
       return;
     }
 
+    const cleanSlug = (formData.slug.trim() || slugify(formData.name) || `prod-${Date.now().toString().slice(-6)}`).toLowerCase();
+
     setIsSubmitting(true);
     try {
       const parsedTags = tagsInput
@@ -229,8 +243,9 @@ export default function AdminProductsPage() {
 
       const payload = {
         ...formData,
+        slug: cleanSlug,
         tags: parsedTags,
-        sku: formData.sku || `EFF-${Date.now().toString().slice(-6)}`,
+        sku: formData.sku.trim() || `EFF-${Date.now().toString().slice(-6)}`,
       };
 
       if (editingProduct) {
@@ -249,9 +264,17 @@ export default function AdminProductsPage() {
         }
       }
     } catch (error: any) {
-      const msg = error.response?.data?.message || 'Error saving product';
-      toast.error(msg);
-      console.error(error);
+      console.error('Failed to save product:', error);
+      const errorData = error.response?.data;
+      let detailedMsg = '';
+      if (errorData?.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+        detailedMsg = errorData.errors
+          .map((errItem: any) => errItem.message || (errItem.field ? `${errItem.field}: ${errItem.message || 'invalid'}` : ''))
+          .filter(Boolean)
+          .join('\n');
+      }
+      const msg = detailedMsg || errorData?.message || error.customMessage || error.message || 'Error saving product';
+      toast.error(msg, { duration: 6000 });
     } finally {
       setIsSubmitting(false);
     }
@@ -595,11 +618,49 @@ export default function AdminProductsPage() {
                       required
                       placeholder="e.g. Master Chronograph Automatic Watch"
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      onChange={(e) => {
+                        const newName = e.target.value;
+                        setFormData((prev) => ({
+                          ...prev,
+                          name: newName,
+                          slug: isSlugManuallyEdited ? prev.slug : slugify(newName),
+                        }));
+                      }}
                       className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3.5 py-2.5 text-xs text-[#18140B] focus:outline-none focus:border-[#B8860B]/50"
                     />
                   </div>
 
+                  <div>
+                    <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5 flex items-center justify-between">
+                      <span>URL Slug *</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsSlugManuallyEdited(false);
+                          setFormData((prev) => ({ ...prev, slug: slugify(prev.name) }));
+                        }}
+                        className="text-[10px] text-[#B8860B] hover:underline flex items-center gap-1 font-normal cursor-pointer"
+                        title="Sync slug with product name"
+                      >
+                        <RefreshCw className="w-2.5 h-2.5" />
+                        Sync with name
+                      </button>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. master-chronograph-automatic-watch"
+                      value={formData.slug}
+                      onChange={(e) => {
+                        setIsSlugManuallyEdited(true);
+                        setFormData((prev) => ({ ...prev, slug: slugify(e.target.value) }));
+                      }}
+                      className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3.5 py-2.5 text-xs font-mono text-[#18140B] focus:outline-none focus:border-[#B8860B]/50"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                       Category *
@@ -618,9 +679,7 @@ export default function AdminProductsPage() {
                       ))}
                     </select>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                       Base SKU
@@ -633,7 +692,9 @@ export default function AdminProductsPage() {
                       className="w-full bg-[#FAF8F5] border border-[#EAE1D1] rounded-xl px-3.5 py-2.5 text-xs font-mono text-[#18140B] focus:outline-none focus:border-[#B8860B]/50"
                     />
                   </div>
+                </div>
 
+                <div className="grid grid-cols-1 gap-4">
                   <div>
                     <label className="block text-[11px] font-semibold text-[#6B6055] mb-1.5">
                       Short Tagline / Overview
