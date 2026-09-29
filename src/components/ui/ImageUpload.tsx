@@ -16,6 +16,50 @@ import { toast } from 'sonner';
 import { uploadSingleImage, uploadMultipleImages } from '@/lib/api';
 import { ProductImage } from '@/types';
 
+// Helper to compress local image files into clean, permanent data URLs
+// This ensures images are stored in MongoDB Atlas and never lost to ephemeral server restarts
+const compressImageToDataUrl = (file: File): Promise<string> => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_DIM = 1200;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_DIM) {
+            height = Math.round((height * MAX_DIM) / width);
+            width = MAX_DIM;
+          }
+        } else {
+          if (height > MAX_DIM) {
+            width = Math.round((width * MAX_DIM) / height);
+            height = MAX_DIM;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve(e.target?.result as string);
+          return;
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        resolve(dataUrl);
+      };
+      img.onerror = () => resolve(e.target?.result as string);
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => resolve('');
+    reader.readAsDataURL(file);
+  });
+};
+
 // ==========================================
 // SINGLE IMAGE UPLOAD (e.g. Category Cover)
 // ==========================================
@@ -49,20 +93,21 @@ export const SingleImageUpload: React.FC<SingleImageUploadProps> = ({
       return;
     }
 
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error('Image size exceeds 10MB limit');
+    if (file.size > 15 * 1024 * 1024) {
+      toast.error('Image size exceeds 15MB limit');
       return;
     }
 
     setIsUploading(true);
-    const toastId = toast.loading('Uploading image to server...');
+    const toastId = toast.loading('Optimizing and attaching image...');
     try {
-      const url = await uploadSingleImage(file);
-      onChange(url);
-      toast.success('Image uploaded successfully', { id: toastId });
+      const dataUrl = await compressImageToDataUrl(file);
+      if (!dataUrl) throw new Error('Could not process image');
+      onChange(dataUrl);
+      toast.success('Image attached successfully', { id: toastId });
       setShowUrlInput(false);
     } catch (err: any) {
-      toast.error(err.customMessage || 'Failed to upload image. Please try again.', { id: toastId });
+      toast.error('Failed to process image. You can also paste an image URL.', { id: toastId });
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {
@@ -288,27 +333,22 @@ export const MultiImageUpload: React.FC<MultiImageUploadProps> = ({
     }
 
     setIsUploading(true);
-    const toastId = toast.loading(`Uploading ${filesToUpload.length} image(s)...`);
+    const toastId = toast.loading(`Optimizing and attaching ${filesToUpload.length} image(s)...`);
     try {
-      let urls: string[] = [];
-      if (filesToUpload.length === 1) {
-        const singleUrl = await uploadSingleImage(filesToUpload[0]);
-        urls = [singleUrl];
-      } else {
-        urls = await uploadMultipleImages(filesToUpload);
-      }
+      const urls = await Promise.all(filesToUpload.map((f) => compressImageToDataUrl(f)));
+      const validUrls = urls.filter((u) => Boolean(u));
 
       const isFirst = images.length === 0;
-      const newItems: ProductImage[] = urls.map((url, idx) => ({
+      const newItems: ProductImage[] = validUrls.map((url, idx) => ({
         url,
         alt: `${productName} view ${images.length + idx + 1}`,
         isMain: isFirst && idx === 0,
       }));
 
       onChange([...images, ...newItems]);
-      toast.success(`Successfully uploaded ${urls.length} photo(s)`, { id: toastId });
+      toast.success(`Successfully added ${validUrls.length} photo(s)`, { id: toastId });
     } catch (err: any) {
-      toast.error(err.customMessage || 'Failed to upload images. Please try again.', { id: toastId });
+      toast.error('Failed to process images. You can also paste an image URL.', { id: toastId });
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {

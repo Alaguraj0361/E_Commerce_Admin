@@ -57,6 +57,7 @@ export default function AdminProductsPage() {
     featured: false,
     bestSeller: false,
     newArrival: false,
+    hasBespokeTailoring: false,
     isActive: true,
   };
 
@@ -135,6 +136,7 @@ export default function AdminProductsPage() {
       featured: product.featured || false,
       bestSeller: product.bestSeller || false,
       newArrival: product.newArrival || false,
+      hasBespokeTailoring: product.hasBespokeTailoring || false,
       isActive: product.isActive,
     });
     setTagsInput((product.tags || []).join(', '));
@@ -848,8 +850,8 @@ export default function AdminProductsPage() {
                   <Sparkles className="w-3.5 h-3.5" /> 5. Discovery Badges & Tags
                 </h3>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <label className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#EAE1D1] p-3 rounded-xl cursor-pointer hover:border-[#EAE1D1]">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                  <label className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#EAE1D1] p-3 rounded-xl cursor-pointer hover:border-[#B8860B]/50 transition-colors">
                     <input
                       type="checkbox"
                       checked={formData.isActive}
@@ -859,7 +861,7 @@ export default function AdminProductsPage() {
                     <span className="text-xs font-semibold text-[#18140B]">Live in Catalog</span>
                   </label>
 
-                  <label className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#EAE1D1] p-3 rounded-xl cursor-pointer hover:border-[#EAE1D1]">
+                  <label className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#EAE1D1] p-3 rounded-xl cursor-pointer hover:border-[#B8860B]/50 transition-colors">
                     <input
                       type="checkbox"
                       checked={formData.featured}
@@ -869,7 +871,7 @@ export default function AdminProductsPage() {
                     <span className="text-xs font-semibold text-[#18140B]">Featured Home</span>
                   </label>
 
-                  <label className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#EAE1D1] p-3 rounded-xl cursor-pointer hover:border-[#EAE1D1]">
+                  <label className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#EAE1D1] p-3 rounded-xl cursor-pointer hover:border-[#B8860B]/50 transition-colors">
                     <input
                       type="checkbox"
                       checked={formData.bestSeller}
@@ -879,7 +881,7 @@ export default function AdminProductsPage() {
                     <span className="text-xs font-semibold text-[#18140B]">Best Seller</span>
                   </label>
 
-                  <label className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#EAE1D1] p-3 rounded-xl cursor-pointer hover:border-[#EAE1D1]">
+                  <label className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#EAE1D1] p-3 rounded-xl cursor-pointer hover:border-[#B8860B]/50 transition-colors">
                     <input
                       type="checkbox"
                       checked={formData.newArrival}
@@ -887,6 +889,19 @@ export default function AdminProductsPage() {
                       className="rounded accent-[#B8860B] w-4 h-4"
                     />
                     <span className="text-xs font-semibold text-[#18140B]">New Arrival</span>
+                  </label>
+
+                  <label className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#EAE1D1] p-3 rounded-xl cursor-pointer hover:border-[#B8860B]/50 transition-colors col-span-2 sm:col-span-1">
+                    <input
+                      type="checkbox"
+                      checked={formData.hasBespokeTailoring}
+                      onChange={(e) => setFormData({ ...formData, hasBespokeTailoring: e.target.checked })}
+                      className="rounded accent-[#B8860B] w-4 h-4"
+                    />
+                    <div>
+                      <span className="text-xs font-semibold text-[#18140B] block">Bespoke Tailoring</span>
+                      <span className="text-[10px] text-[#8C7E72] block">Enable custom stitching</span>
+                    </div>
                   </label>
                 </div>
 
