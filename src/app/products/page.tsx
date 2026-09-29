@@ -76,12 +76,13 @@ export default function AdminProductsPage() {
   const [tagsInput, setTagsInput] = useState('');
 
   // Variant Builder Temporary State
-  const [variantSize, setVariantSize] = useState('M');
-  const [variantColor, setVariantColor] = useState('Noir Black');
+  const [variantSize, setVariantSize] = useState('');
+  const [variantColor, setVariantColor] = useState('');
   const [variantColorHex, setVariantColorHex] = useState('#18181b');
   const [variantSku, setVariantSku] = useState('');
   const [variantPrice, setVariantPrice] = useState(0);
   const [variantStock, setVariantStock] = useState(10);
+  const [editingVariantIndex, setEditingVariantIndex] = useState<number | null>(null);
 
   const fetchCategories = async () => {
     try {
@@ -114,9 +115,20 @@ export default function AdminProductsPage() {
     fetchProducts();
   }, []);
 
+  const resetVariantInputs = () => {
+    setVariantSize('');
+    setVariantColor('');
+    setVariantColorHex('#18181b');
+    setVariantSku('');
+    setVariantPrice(0);
+    setVariantStock(10);
+    setEditingVariantIndex(null);
+  };
+
   const openCreateModal = () => {
     setEditingProduct(null);
     setIsSlugManuallyEdited(false);
+    resetVariantInputs();
     setFormData({
       ...initialFormState,
       category: categories[0]?._id || '',
@@ -129,6 +141,7 @@ export default function AdminProductsPage() {
   const openEditModal = (product: Product) => {
     setEditingProduct(product);
     setIsSlugManuallyEdited(true);
+    resetVariantInputs();
     const catId = typeof product.category === 'object' ? product.category._id : product.category;
     setFormData({
       name: product.name,
@@ -187,15 +200,81 @@ export default function AdminProductsPage() {
   };
 
   // Variant Helpers
+  const handleStartEditVariant = (index: number) => {
+    const v = formData.variants[index];
+    if (!v) return;
+    setEditingVariantIndex(index);
+    setVariantSize(v.attributes?.size || '');
+    setVariantColor(v.attributes?.color || '');
+    setVariantColorHex(v.attributes?.colorHex || '#18181b');
+    setVariantSku(v.sku || '');
+    setVariantPrice(v.price || formData.price || 0);
+    setVariantStock(v.stock ?? 10);
+
+    // Smooth scroll to variant builder
+    const section = document.getElementById('variant-builder-section');
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  };
+
+  const handleCancelVariantEdit = () => {
+    resetVariantInputs();
+  };
+
+  const handleSaveVariantEdit = () => {
+    if (editingVariantIndex === null) return;
+    const existing = formData.variants[editingVariantIndex];
+    if (!existing) return;
+
+    if (!variantColor.trim() && !variantSize.trim()) {
+      toast.error('Please enter a color name or size for this variant');
+      return;
+    }
+
+    const defaultSku = `${formData.sku || 'SKU'}-${variantSize.trim() || 'STD'}-${(variantColor.trim() || 'COL').slice(0, 3).toUpperCase()}`;
+    const sku = variantSku.trim() || existing.sku || defaultSku;
+
+    const updatedVariant: ProductVariant = {
+      ...existing,
+      sku,
+      price: variantPrice > 0 ? variantPrice : formData.price,
+      stock: variantStock >= 0 ? variantStock : 0,
+      attributes: {
+        ...existing.attributes,
+        size: variantSize.trim(),
+        color: variantColor.trim(),
+        colorHex: variantColorHex,
+      },
+    };
+
+    setFormData((prev) => ({
+      ...prev,
+      variants: prev.variants.map((v, i) => (i === editingVariantIndex ? updatedVariant : v)),
+    }));
+
+    const label = [variantSize.trim(), variantColor.trim()].filter(Boolean).join(' / ');
+    toast.success(`Variant ${label || `#${editingVariantIndex + 1}`} updated successfully`);
+    resetVariantInputs();
+  };
+
   const handleAddVariant = () => {
-    const sku = variantSku.trim() || `${formData.sku || 'SKU'}-${variantSize}-${variantColor.slice(0, 3).toUpperCase()}`;
+    if (!variantColor.trim() && !variantSize.trim()) {
+      toast.error('Please enter a color name or size');
+      return;
+    }
+
+    const sku =
+      variantSku.trim() ||
+      `${formData.sku || 'SKU'}-${variantSize.trim() || 'STD'}-${(variantColor.trim() || 'COL').slice(0, 3).toUpperCase()}`;
+
     const newVariant: ProductVariant = {
       sku,
       price: variantPrice > 0 ? variantPrice : formData.price,
-      stock: variantStock,
+      stock: variantStock >= 0 ? variantStock : 0,
       attributes: {
-        size: variantSize,
-        color: variantColor,
+        size: variantSize.trim(),
+        color: variantColor.trim(),
         colorHex: variantColorHex,
       },
     };
@@ -205,15 +284,23 @@ export default function AdminProductsPage() {
       variants: [...prev.variants, newVariant],
     }));
 
-    setVariantSku('');
-    toast.success(`Variant ${variantSize} / ${variantColor} added`);
+    resetVariantInputs();
+    const label = [variantSize.trim(), variantColor.trim()].filter(Boolean).join(' / ');
+    toast.success(`Variant ${label} added`);
   };
 
   const handleRemoveVariant = (index: number) => {
+    if (editingVariantIndex === index) {
+      resetVariantInputs();
+    } else if (editingVariantIndex !== null && index < editingVariantIndex) {
+      setEditingVariantIndex(editingVariantIndex - 1);
+    }
+
     setFormData((prev) => ({
       ...prev,
       variants: prev.variants.filter((_, i) => i !== index),
     }));
+    toast.info('Variant removed');
   };
 
   // Submit Handler
@@ -800,106 +887,251 @@ export default function AdminProductsPage() {
               </div>
 
               {/* Section 4: Variant Builder */}
-              <div className="space-y-4 pt-4 border-t border-[#EAE1D1]">
-                <h3 className="text-xs font-bold text-[#B8860B] uppercase tracking-wider flex items-center gap-2">
-                  <Layers className="w-3.5 h-3.5" /> 4. Multi-SKU Variant Builder
-                </h3>
+              <div id="variant-builder-section" className="space-y-4 pt-4 border-t border-[#EAE1D1]">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-bold text-[#B8860B] uppercase tracking-wider flex items-center gap-2">
+                    <Layers className="w-3.5 h-3.5" /> 4. Multi-SKU Variant Builder
+                  </h3>
+                  {editingVariantIndex !== null && (
+                    <span className="text-[11px] font-semibold text-[#B8860B] bg-[#FFF8EB] border border-[#B8860B]/30 px-2.5 py-0.5 rounded-full flex items-center gap-1.5 animate-pulse">
+                      <Edit2 className="w-2.5 h-2.5" /> Editing Variant #{editingVariantIndex + 1}
+                    </span>
+                  )}
+                </div>
 
-                {/* Inline adder */}
-                <div className="p-4 bg-[#FAF7F2] border border-[#EAE1D1] rounded-xl space-y-3">
-                  <p className="text-[11px] text-[#6B6055] font-medium">Add Size, Color & Stock Variant:</p>
+                {/* Inline adder & editor */}
+                <div
+                  className={`p-4 rounded-xl space-y-3 transition-all ${
+                    editingVariantIndex !== null
+                      ? 'bg-[#FFFBF2] border-2 border-[#B8860B] shadow-sm'
+                      : 'bg-[#FAF7F2] border border-[#EAE1D1]'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <p className="text-[11px] text-[#6B6055] font-semibold flex items-center gap-2">
+                      {editingVariantIndex !== null ? (
+                        <>
+                          <span className="w-2 h-2 rounded-full bg-[#B8860B]" />
+                          <span>
+                            Editing Variant #{editingVariantIndex + 1}:{' '}
+                            <span className="text-[#18140B] font-bold">
+                              {formData.variants[editingVariantIndex]?.attributes?.color ||
+                                formData.variants[editingVariantIndex]?.attributes?.size ||
+                                'Variant'}
+                            </span>
+                          </span>
+                        </>
+                      ) : (
+                        <span>Add Size, Color & Stock Variant:</span>
+                      )}
+                    </p>
+
+                    {editingVariantIndex !== null && (
+                      <button
+                        type="button"
+                        onClick={handleCancelVariantEdit}
+                        className="text-[11px] text-[#8C7E72] hover:text-[#18140B] font-medium flex items-center gap-1 hover:underline cursor-pointer"
+                      >
+                        <X className="w-3 h-3" /> Cancel Editing
+                      </button>
+                    )}
+                  </div>
+
                   <div className="grid grid-cols-2 sm:grid-cols-6 gap-2.5">
                     <div>
-                      <label className="text-[10px] text-[#8C7E72] block mb-1">Size</label>
+                      <label className="text-[10px] text-[#8C7E72] block mb-1">Size (optional)</label>
                       <input
                         type="text"
-                        placeholder="S, M, L, 42mm..."
+                        placeholder="S, M, L, Free Size..."
                         value={variantSize}
                         onChange={(e) => setVariantSize(e.target.value)}
-                        className="w-full bg-white border border-[#EAE1D1] text-xs text-[#18140B] rounded-lg px-2.5 py-1.5"
+                        className="w-full bg-white border border-[#EAE1D1] text-xs text-[#18140B] rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-[#B8860B]"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-[#8C7E72] block mb-1">Color Name</label>
+                      <label className="text-[10px] text-[#8C7E72] block mb-1">Color Name *</label>
                       <input
                         type="text"
-                        placeholder="e.g. Noir"
+                        placeholder="e.g. Peacock Green"
                         value={variantColor}
                         onChange={(e) => setVariantColor(e.target.value)}
-                        className="w-full bg-white border border-[#EAE1D1] text-xs text-[#18140B] rounded-lg px-2.5 py-1.5"
+                        className="w-full bg-white border border-[#EAE1D1] text-xs text-[#18140B] rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-[#B8860B]"
                       />
                     </div>
                     <div>
                       <label className="text-[10px] text-[#8C7E72] block mb-1">Color Swatch</label>
-                      <input
-                        type="color"
-                        value={variantColorHex}
-                        onChange={(e) => setVariantColorHex(e.target.value)}
-                        className="w-full h-8 bg-white border border-[#EAE1D1] rounded-lg cursor-pointer p-0.5"
-                      />
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="color"
+                          value={variantColorHex}
+                          onChange={(e) => setVariantColorHex(e.target.value)}
+                          className="w-8 h-8 bg-white border border-[#EAE1D1] rounded-lg cursor-pointer p-0.5 flex-shrink-0"
+                          title="Pick Color"
+                        />
+                        <span className="text-[10px] font-mono text-[#6B6055] uppercase truncate">
+                          {variantColorHex}
+                        </span>
+                      </div>
                     </div>
                     <div>
-                      <label className="text-[10px] text-[#8C7E72] block mb-1">Variant Price (₹)</label>
+                      <label className="text-[10px] text-[#8C7E72] block mb-1">Price (₹)</label>
                       <input
                         type="number"
-                        placeholder="0 = default"
+                        placeholder={`0 = ₹${formData.price || 0}`}
                         value={variantPrice || ''}
                         onChange={(e) => setVariantPrice(parseFloat(e.target.value) || 0)}
-                        className="w-full bg-white border border-[#EAE1D1] text-xs font-mono text-[#18140B] rounded-lg px-2.5 py-1.5"
+                        className="w-full bg-white border border-[#EAE1D1] text-xs font-mono text-[#18140B] rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-[#B8860B]"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-[#8C7E72] block mb-1">Stock</label>
+                      <label className="text-[10px] text-[#8C7E72] block mb-1">Stock (Units)</label>
                       <input
                         type="number"
                         min="0"
                         value={variantStock}
                         onChange={(e) => setVariantStock(parseInt(e.target.value, 10) || 0)}
-                        className="w-full bg-white border border-[#EAE1D1] text-xs font-mono text-[#18140B] rounded-lg px-2.5 py-1.5"
+                        className="w-full bg-white border border-[#EAE1D1] text-xs font-mono text-[#18140B] rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-[#B8860B]"
                       />
                     </div>
-                    <div className="flex items-end">
-                      <button
-                        type="button"
-                        onClick={handleAddVariant}
-                        className="w-full bg-[#F5EFEB] text-[#18140B] border border-[#EAE1D1] hover:bg-zinc-700 text-[#B8860B] font-bold text-xs py-2 rounded-lg transition-colors"
-                      >
-                        + Add Variant
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Existing variants chips */}
-                {formData.variants.length > 0 && (
-                  <div className="space-y-2">
-                    <p className="text-[11px] text-[#6B6055]">Active Variants ({formData.variants.length}):</p>
-                    <div className="flex flex-wrap gap-2">
-                      {formData.variants.map((v, i) => (
-                        <div
-                          key={i}
-                          className="flex items-center gap-2 bg-[#FAF8F5] border border-[#EAE1D1] px-3 py-1.5 rounded-xl text-xs"
-                        >
-                          <div
-                            className="w-3 h-3 rounded-full border border-[#EAE1D1]"
-                            style={{ backgroundColor: v.attributes?.colorHex || '#555' }}
-                          />
-                          <span className="text-[#18140B] font-semibold">{v.attributes?.size}</span>
-                          <span className="text-[#8C7E72]">/</span>
-                          <span className="text-[#3D342B]">{v.attributes?.color}</span>
-                          <span className="font-mono text-[#B8860B] text-[11px]">
-                            {formatCurrency(v.price || formData.price)}
-                          </span>
-                          <span className="text-[10px] text-[#8C7E72]">({v.stock} pcs)</span>
+                    <div className="flex items-end gap-1.5">
+                      {editingVariantIndex !== null ? (
+                        <>
                           <button
                             type="button"
-                            onClick={() => handleRemoveVariant(i)}
-                            className="text-[#8C7E72] hover:text-rose-400 ml-1"
+                            onClick={handleSaveVariantEdit}
+                            className="flex-1 bg-[#B8860B] hover:bg-[#9E7309] text-white font-bold text-xs py-2 rounded-lg transition-all shadow-sm flex items-center justify-center gap-1 cursor-pointer"
+                            title="Save changes to this variant"
                           >
-                            <X className="w-3 h-3" />
+                            <Check className="w-3.5 h-3.5" /> Save
                           </button>
-                        </div>
-                      ))}
+                          <button
+                            type="button"
+                            onClick={handleCancelVariantEdit}
+                            className="px-2.5 py-2 bg-white border border-[#EAE1D1] hover:bg-[#F5EFEB] text-[#6B6055] text-xs rounded-lg transition-colors cursor-pointer"
+                            title="Cancel editing"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleAddVariant}
+                          className="w-full bg-[#18140B] text-white hover:bg-[#B8860B] font-bold text-xs py-2 rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-1 shadow-sm"
+                        >
+                          <Plus className="w-3.5 h-3.5" /> Add Variant
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* SKU input (expanded when editing or optional) */}
+                  {(editingVariantIndex !== null || variantSku) && (
+                    <div className="pt-2 border-t border-[#EAE1D1]/60 flex items-center gap-3">
+                      <label className="text-[10px] font-semibold text-[#8C7E72] whitespace-nowrap">
+                        Variant SKU:
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Leave blank to auto-generate SKU"
+                        value={variantSku}
+                        onChange={(e) => setVariantSku(e.target.value)}
+                        className="bg-white border border-[#EAE1D1] text-xs font-mono text-[#18140B] rounded-lg px-2.5 py-1 w-full max-w-sm focus:outline-none focus:border-[#B8860B]"
+                      />
+                      <span className="text-[10px] text-[#8C7E72]">
+                        (Auto-generated if blank)
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Existing variants cards */}
+                {formData.variants.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-[11px] font-semibold text-[#6B6055]">
+                        Active Variants ({formData.variants.length}):
+                      </p>
+                      <span className="text-[10px] text-[#8C7E72]">
+                        Click the edit icon on any variant to modify its attributes
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+                      {formData.variants.map((v, i) => {
+                        const isEditing = editingVariantIndex === i;
+                        const size = v.attributes?.size?.trim();
+                        const color = v.attributes?.color?.trim();
+                        const label = size && color ? `${size} / ${color}` : color || size || `Variant #${i + 1}`;
+
+                        return (
+                          <div
+                            key={i}
+                            className={`flex items-center justify-between p-3 rounded-xl border transition-all ${
+                              isEditing
+                                ? 'bg-[#FFF9EE] border-[#B8860B] shadow-md ring-2 ring-[#B8860B]/30'
+                                : 'bg-[#FAF8F5] border-[#EAE1D1] hover:border-[#B8860B]/40 hover:bg-white'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <div
+                                className="w-5 h-5 rounded-full border border-black/15 shadow-sm flex-shrink-0"
+                                style={{ backgroundColor: v.attributes?.colorHex || '#888' }}
+                                title={v.attributes?.colorHex || color || 'Color'}
+                              />
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="font-bold text-xs text-[#18140B] truncate">
+                                    {label}
+                                  </span>
+                                  {isEditing && (
+                                    <span className="text-[9px] font-bold bg-[#B8860B] text-white px-1.5 py-0.5 rounded-full uppercase tracking-wider">
+                                      Editing
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2 text-[10px] text-[#8C7E72] mt-0.5">
+                                  <span className="font-mono text-[#B8860B] font-semibold">
+                                    {formatCurrency(v.price || formData.price)}
+                                  </span>
+                                  <span>•</span>
+                                  <span className={v.stock <= 3 ? 'text-amber-600 font-semibold' : ''}>
+                                    {v.stock} in stock
+                                  </span>
+                                </div>
+                                {v.sku && (
+                                  <p className="text-[9px] font-mono text-[#8C7E72] truncate max-w-[150px] mt-0.5">
+                                    {v.sku}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-1 ml-2 flex-shrink-0">
+                              <button
+                                type="button"
+                                onClick={() => handleStartEditVariant(i)}
+                                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                                  isEditing
+                                    ? 'bg-[#B8860B] text-white shadow-sm'
+                                    : 'text-[#6B6055] hover:text-[#B8860B] hover:bg-[#F5EFEB]'
+                                }`}
+                                title="Edit Variant"
+                              >
+                                <Edit2 className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveVariant(i)}
+                                className="p-1.5 rounded-lg text-[#6B6055] hover:text-rose-500 hover:bg-rose-50 transition-colors cursor-pointer"
+                                title="Delete Variant"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
