@@ -35,3 +35,37 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #B8860B;
 }
+
+/* Print Optimization for Shipping Labels */
+@media print {
+  @page {
+    size: auto;
+    margin: 10mm;
+  }
+
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+
+  /* Hide navigation, sidebar, backdrops and buttons */
+  header, nav, aside, .no-print, button {
+    display: none !important;
+  }
+
+  /* Make sure background colors and borders render on paper */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .shipping-label-printable {
+    box-shadow: none !important;
+    border: 2px solid #000000 !important;
+    margin: 0 auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    page-break-inside: avoid !important;
+    page-break-after: avoid !important;
+  }
+}

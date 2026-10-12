@@ -20,11 +20,13 @@ import {
   Trash2,
   AlertCircle,
   Loader2,
+  Printer,
 } from 'lucide-react';
 import { api } from '../../lib/api';
 import { formatCurrency, formatDate } from '../../lib/utils';
 import { Order } from '../../types';
 import { toast } from 'sonner';
+import { ShippingLabelModal } from '../../components/ui/ShippingLabelModal';
 
 const STATUS_OPTIONS = [
   'Pending',
@@ -54,6 +56,23 @@ export default function AdminOrdersPage() {
   const [showClearAllConfirm, setShowClearAllConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Shipping Label States
+  const [labelOrder, setLabelOrder] = useState<Order | null>(null);
+  const [isLabelModalOpen, setIsLabelModalOpen] = useState(false);
+
+  const openShippingLabel = (order: Order) => {
+    setLabelOrder(order);
+    setIsLabelModalOpen(true);
+  };
+
+  const handleOrderUpdatedFromLabel = (updated: Order) => {
+    setOrders((prev) => prev.map((o) => (o._id === updated._id ? updated : o)));
+    if (selectedOrder?._id === updated._id) {
+      setSelectedOrder(updated);
+      setTrackingNumber(updated.trackingNumber || '');
+    }
+  };
+
   const fetchOrders = async () => {
     try {
       setIsLoading(true);
@@ -72,6 +91,19 @@ export default function AdminOrdersPage() {
   useEffect(() => {
     fetchOrders();
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && orders.length > 0) {
+      const params = new URLSearchParams(window.location.search);
+      const labelId = params.get('labelId');
+      if (labelId) {
+        const found = orders.find((o) => o._id === labelId || o.orderNumber === labelId);
+        if (found) {
+          openShippingLabel(found);
+        }
+      }
+    }
+  }, [orders]);
 
   const openOrderDetails = (order: Order) => {
     setSelectedOrder(order);
@@ -403,6 +435,17 @@ export default function AdminOrdersPage() {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
+                              openShippingLabel(order);
+                            }}
+                            className="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 rounded-xl text-xs font-bold transition-colors flex items-center gap-1 shadow-2xs"
+                            title="Generate & Print Shipping Label"
+                          >
+                            <Printer className="w-3.5 h-3.5 text-amber-800" />
+                            <span className="hidden sm:inline">Label</span>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
                               openOrderDetails(order);
                             }}
                             className="px-3 py-1.5 bg-[#FAF7F2] hover:bg-[#F2ECE3] border border-[#EAE1D1] text-[#18140B] rounded-xl text-xs font-semibold transition-colors"
@@ -450,12 +493,22 @@ export default function AdminOrdersPage() {
                   </span>
                 </p>
               </div>
-              <button
-                onClick={() => setSelectedOrder(null)}
-                className="p-1 rounded-lg text-[#6B6055] hover:text-[#18140B] transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => openShippingLabel(selectedOrder)}
+                  className="px-3.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-colors"
+                >
+                  <Printer className="w-3.5 h-3.5 text-amber-800" />
+                  Print Label
+                </button>
+                <button
+                  onClick={() => setSelectedOrder(null)}
+                  className="p-1 rounded-lg text-[#6B6055] hover:text-[#18140B] transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             {/* Quick Status Updater Form */}
@@ -512,7 +565,15 @@ export default function AdminOrdersPage() {
                 />
               </div>
 
-              <div className="flex justify-end pt-1">
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                <button
+                  type="button"
+                  onClick={() => openShippingLabel(selectedOrder)}
+                  className="px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-colors"
+                >
+                  <Printer className="w-3.5 h-3.5 text-amber-800" />
+                  Generate Shipping Label
+                </button>
                 <button
                   type="submit"
                   disabled={isUpdating}
@@ -757,6 +818,17 @@ export default function AdminOrdersPage() {
           </div>
         </div>
       )}
+
+      {/* Shipping Label Modal */}
+      <ShippingLabelModal
+        order={labelOrder}
+        isOpen={isLabelModalOpen}
+        onClose={() => {
+          setIsLabelModalOpen(false);
+          setLabelOrder(null);
+        }}
+        onOrderUpdated={handleOrderUpdatedFromLabel}
+      />
     </div>
   );
 }

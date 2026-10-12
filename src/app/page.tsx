@@ -14,13 +14,17 @@ import {
   ArrowRight,
   Plus,
   ArrowUpRight,
+  Printer,
 } from 'lucide-react';
 import { api } from '../lib/api';
 import { formatCurrency, formatDate } from '../lib/utils';
+import { ShippingLabelModal } from '../components/ui/ShippingLabelModal';
 
 export default function AdminDashboardPage() {
   const [analytics, setAnalytics] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [labelOrder, setLabelOrder] = useState<any>(null);
+  const [isLabelModalOpen, setIsLabelModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -223,19 +227,31 @@ export default function AdminDashboardPage() {
                     {order.shippingAddress?.fullName || 'Customer'} • {order.items?.length || 0} artifacts
                   </span>
                 </div>
-                <div className="text-right">
-                  <span className="font-bold text-[#18140B] block">
-                    {formatCurrency(order.total)}
-                  </span>
-                  <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                      order.paymentStatus === 'Paid'
-                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                        : 'bg-amber-50 text-amber-800 border-amber-200'
-                    }`}
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <span className="font-bold text-[#18140B] block">
+                      {formatCurrency(order.total)}
+                    </span>
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                        order.paymentStatus === 'Paid'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : 'bg-amber-50 text-amber-800 border-amber-200'
+                      }`}
+                    >
+                      {order.paymentStatus}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setLabelOrder(order);
+                      setIsLabelModalOpen(true);
+                    }}
+                    className="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold transition-colors flex items-center gap-1 shadow-2xs"
+                    title="Generate & Print Shipping Label"
                   >
-                    {order.paymentStatus}
-                  </span>
+                    <Printer className="w-3.5 h-3.5 text-amber-800" />
+                  </button>
                 </div>
               </div>
             ))}
@@ -275,6 +291,16 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Shipping Label Modal */}
+      <ShippingLabelModal
+        order={labelOrder}
+        isOpen={isLabelModalOpen}
+        onClose={() => {
+          setIsLabelModalOpen(false);
+          setLabelOrder(null);
+        }}
+      />
     </div>
   );
 }
