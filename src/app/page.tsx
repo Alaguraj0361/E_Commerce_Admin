@@ -233,10 +233,10 @@ export default function AdminDashboardPage() {
                       {formatCurrency(order.total)}
                     </span>
                     <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                      className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
                         order.paymentStatus === 'Paid'
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          : 'bg-amber-50 text-amber-800 border-amber-200'
+                          ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                          : 'bg-amber-100 text-amber-950 border-amber-300'
                       }`}
                     >
                       {order.paymentStatus}
@@ -247,10 +247,11 @@ export default function AdminDashboardPage() {
                       setLabelOrder(order);
                       setIsLabelModalOpen(true);
                     }}
-                    className="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold transition-colors flex items-center gap-1 shadow-2xs"
+                    className="px-2.5 py-1.5 rounded-xl bg-[#18140B] hover:bg-[#2D2319] text-white border border-[#18140B] font-bold transition-all flex items-center gap-1 shadow-sm active:scale-95 text-xs"
                     title="Generate & Print Shipping Label"
                   >
-                    <Printer className="w-3.5 h-3.5 text-amber-800" />
+                    <Printer className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Label</span>
                   </button>
                 </div>
               </div>

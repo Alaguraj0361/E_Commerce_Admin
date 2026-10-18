@@ -199,34 +199,34 @@ export default function AdminOrdersPage() {
     switch (status) {
       case 'Delivered':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-950/70 text-emerald-400 border border-emerald-800/40">
-            <CheckCircle2 className="w-3 h-3" /> Delivered
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 border border-emerald-300 shadow-2xs">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" /> Delivered
           </span>
         );
       case 'Shipped':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-sky-950/70 text-sky-400 border border-sky-800/40">
-            <Truck className="w-3 h-3" /> Shipped
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-950 border border-sky-300 shadow-2xs">
+            <Truck className="w-3.5 h-3.5 text-sky-700" /> Shipped
           </span>
         );
       case 'Processing':
       case 'Packed':
       case 'Confirmed':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-950/70 text-[#B8860B] border border-amber-800/40">
-            <Clock className="w-3 h-3" /> {status}
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-950 border border-amber-300 shadow-2xs">
+            <Clock className="w-3.5 h-3.5 text-amber-700" /> {status}
           </span>
         );
       case 'Cancelled':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-rose-950/70 text-rose-400 border border-rose-800/40">
-            <XCircle className="w-3 h-3" /> Cancelled
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-950 border border-rose-300 shadow-2xs">
+            <XCircle className="w-3.5 h-3.5 text-rose-700" /> Cancelled
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#F5EFEB] text-[#18140B] border border-[#EAE1D1] text-[#6B6055] border border-[#EAE1D1]">
-            <Clock className="w-3 h-3" /> Pending
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-zinc-100 text-zinc-900 border border-zinc-300 shadow-2xs">
+            <Clock className="w-3.5 h-3.5 text-zinc-600" /> Pending
           </span>
         );
     }
@@ -236,20 +236,20 @@ export default function AdminOrdersPage() {
     switch (status) {
       case 'Paid':
         return (
-          <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-950/50 border border-emerald-800/40 px-2 py-0.5 rounded">
+          <span className="text-[11px] font-mono font-black text-emerald-900 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded shadow-2xs">
             PAID
           </span>
         );
       case 'Pending':
         return (
-          <span className="text-[10px] font-mono font-bold text-[#B8860B] bg-amber-950/50 border border-amber-800/40 px-2 py-0.5 rounded">
+          <span className="text-[11px] font-mono font-black text-amber-950 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded shadow-2xs">
             PENDING
           </span>
         );
       default:
         return (
-          <span className="text-[10px] font-mono font-bold text-rose-400 bg-rose-950/50 border border-rose-800/40 px-2 py-0.5 rounded">
-            {status.toUpperCase()}
+          <span className="text-[11px] font-mono font-black text-rose-950 bg-rose-100 border border-rose-300 px-2 py-0.5 rounded shadow-2xs">
+            {status?.toUpperCase() || 'UNPAID'}
           </span>
         );
     }
@@ -359,10 +359,10 @@ export default function AdminOrdersPage() {
                     >
                       {/* Order Number & Date */}
                       <td className="py-3 px-4">
-                        <p className="font-mono font-bold text-[#B8860B] hover:underline">
+                        <p className="font-mono font-bold text-[#18140B] hover:text-[#B8860B] hover:underline">
                           #{order.orderNumber}
                         </p>
-                        <p className="text-[10px] text-[#8C7E72] mt-0.5">{formatDate(order.createdAt)}</p>
+                        <p className="text-[10px] text-[#6B6055] font-medium mt-0.5">{formatDate(order.createdAt)}</p>
                       </td>
 
                       {/* Customer */}
@@ -405,7 +405,7 @@ export default function AdminOrdersPage() {
                         </p>
                         <div className="mt-1 flex items-center gap-1.5 flex-wrap">
                           {getPaymentBadge(order.paymentStatus)}
-                          <span className="text-[9px] font-bold uppercase tracking-wider text-[#6B6055] bg-[#FAF8F5] px-1.5 py-0.5 rounded border border-[#EAE1D1]">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#18140B] bg-[#FAF7F2] px-2 py-0.5 rounded border border-[#EAE1D1]">
                             {order.paymentMethod === 'razorpay'
                               ? 'UPI / Online'
                               : order.paymentMethod === 'cod'
@@ -421,11 +421,13 @@ export default function AdminOrdersPage() {
                       {/* Tracking */}
                       <td className="py-3 px-4 font-mono text-[11px]">
                         {order.trackingNumber ? (
-                          <span className="text-[#3D342B] bg-[#FAF8F5] px-2 py-1 rounded border border-[#EAE1D1]">
+                          <span className="text-[#18140B] font-mono font-bold bg-[#FAF7F2] px-2.5 py-1 rounded-lg border border-[#EAE1D1]">
                             {order.trackingNumber}
                           </span>
                         ) : (
-                          <span className="text-zinc-600 italic">Not assigned</span>
+                          <span className="text-[#6B6055] font-medium bg-[#FAF7F2] px-2.5 py-1 rounded-lg border border-[#EAE1D1]/60">
+                            Not assigned
+                          </span>
                         )}
                       </td>
 
@@ -437,11 +439,11 @@ export default function AdminOrdersPage() {
                               e.stopPropagation();
                               openShippingLabel(order);
                             }}
-                            className="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 rounded-xl text-xs font-bold transition-colors flex items-center gap-1 shadow-2xs"
+                            className="px-3 py-1.5 bg-[#18140B] hover:bg-[#2D2319] text-white border border-[#18140B] rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
                             title="Generate & Print Shipping Label"
                           >
-                            <Printer className="w-3.5 h-3.5 text-amber-800" />
-                            <span className="hidden sm:inline">Label</span>
+                            <Printer className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Label</span>
                           </button>
                           <button
                             onClick={(e) => {
@@ -497,9 +499,9 @@ export default function AdminOrdersPage() {
                 <button
                   type="button"
                   onClick={() => openShippingLabel(selectedOrder)}
-                  className="px-3.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-colors"
+                  className="px-3.5 py-1.5 rounded-xl bg-[#18140B] hover:bg-[#2D2319] text-white border border-[#18140B] font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all active:scale-95"
                 >
-                  <Printer className="w-3.5 h-3.5 text-amber-800" />
+                  <Printer className="w-3.5 h-3.5 text-amber-400" />
                   Print Label
                 </button>
                 <button
@@ -522,13 +524,13 @@ export default function AdminOrdersPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] text-[#6B6055] block mb-1 font-semibold">
+                  <label className="text-[11px] text-[#18140B] block mb-1 font-bold">
                     Change Fulfillment Status
                   </label>
                   <select
                     value={newStatus}
                     onChange={(e) => setNewStatus(e.target.value)}
-                    className="w-full bg-white border border-[#EAE1D1] text-xs text-[#18140B] rounded-xl px-3 py-2 focus:border-[#B8860B]/50"
+                    className="w-full bg-white border border-[#EAE1D1] text-xs font-medium text-[#18140B] rounded-xl px-3 py-2 focus:border-[#B8860B]/50"
                   >
                     {STATUS_OPTIONS.map((st) => (
                       <option key={st} value={st}>
@@ -539,7 +541,7 @@ export default function AdminOrdersPage() {
                 </div>
 
                 <div>
-                  <label className="text-[10px] text-[#6B6055] block mb-1 font-semibold">
+                  <label className="text-[11px] text-[#18140B] block mb-1 font-bold">
                     Courier Tracking Code
                   </label>
                   <input
@@ -547,13 +549,13 @@ export default function AdminOrdersPage() {
                     placeholder="e.g. DHL-9982410"
                     value={trackingNumber}
                     onChange={(e) => setTrackingNumber(e.target.value)}
-                    className="w-full bg-white border border-[#EAE1D1] text-xs font-mono text-[#18140B] rounded-xl px-3 py-2 focus:border-[#B8860B]/50"
+                    className="w-full bg-white border border-[#EAE1D1] text-xs font-mono font-medium text-[#18140B] rounded-xl px-3 py-2 focus:border-[#B8860B]/50"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-[10px] text-[#6B6055] block mb-1 font-semibold">
+                <label className="text-[11px] text-[#18140B] block mb-1 font-bold">
                   Milestone Note (recorded in timeline)
                 </label>
                 <input
@@ -561,7 +563,7 @@ export default function AdminOrdersPage() {
                   placeholder="e.g. Handed over to air freight carrier hub"
                   value={timelineNote}
                   onChange={(e) => setTimelineNote(e.target.value)}
-                  className="w-full bg-white border border-[#EAE1D1] text-xs text-[#18140B] rounded-xl px-3 py-2 focus:border-[#B8860B]/50"
+                  className="w-full bg-white border border-[#EAE1D1] text-xs font-medium text-[#18140B] rounded-xl px-3 py-2 focus:border-[#B8860B]/50"
                 />
               </div>
 
@@ -569,9 +571,9 @@ export default function AdminOrdersPage() {
                 <button
                   type="button"
                   onClick={() => openShippingLabel(selectedOrder)}
-                  className="px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-colors"
+                  className="px-4 py-2 rounded-xl bg-[#18140B] hover:bg-[#2D2319] text-white border border-[#18140B] font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all active:scale-95"
                 >
-                  <Printer className="w-3.5 h-3.5 text-amber-800" />
+                  <Printer className="w-3.5 h-3.5 text-amber-400" />
                   Generate Shipping Label
                 </button>
                 <button
@@ -653,7 +655,7 @@ export default function AdminOrdersPage() {
                     <span className="font-mono">{formatCurrency(selectedOrder.subtotal)}</span>
                   </div>
                   {selectedOrder.discount > 0 && (
-                    <div className="flex justify-between text-emerald-400">
+                    <div className="flex justify-between text-emerald-800 font-semibold">
                       <span>Discount ({selectedOrder.couponCode || 'Coupon'}):</span>
                       <span className="font-mono">-{formatCurrency(selectedOrder.discount)}</span>
                     </div>
