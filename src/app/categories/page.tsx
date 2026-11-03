@@ -138,8 +138,8 @@ export default function AdminCategoriesPage() {
   const filteredCategories = useMemo(() => {
     return categories.filter(
       (c) =>
-        c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.slug.toLowerCase().includes(searchQuery.toLowerCase())
+        (c.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (c.slug || '').toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [categories, searchQuery]);
 
@@ -252,7 +252,7 @@ export default function AdminCategoriesPage() {
 
               {/* Actions */}
               <div className="p-4 pt-0 border-t border-[#EAE1D1] flex items-center justify-between mt-2">
-                <span className="text-[10px] text-[#8C7E72] font-mono">ID: {cat._id.slice(-6)}</span>
+                <span className="text-[10px] text-[#8C7E72] font-mono">ID: {(cat._id || '').slice(-6)}</span>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => openEditModal(cat)}

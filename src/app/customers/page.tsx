@@ -42,8 +42,8 @@ export default function AdminCustomersPage() {
 
   const filteredCustomers = useMemo(() => {
     return customers.filter((c) => {
-      const fullName = `${c.firstName} ${c.lastName}`.toLowerCase();
-      const email = c.email.toLowerCase();
+      const fullName = `${c.firstName || ''} ${c.lastName || ''}`.toLowerCase();
+      const email = (c.email || '').toLowerCase();
       const query = searchQuery.toLowerCase();
       return fullName.includes(query) || email.includes(query);
     });

@@ -135,7 +135,7 @@ export const AdminLayoutWrapper = ({ children }: { children: React.ReactNode }) 
 
             {user && (
               <div className="w-8 h-8 rounded-full bg-[#F5EFEB] text-[#B8860B] flex items-center justify-center font-bold text-xs border border-[#E0D5C3] shadow-xs">
-                {user.firstName[0]}
+                {user.firstName?.[0] || 'A'}
               </div>
             )}
           </div>

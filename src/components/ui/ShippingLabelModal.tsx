@@ -462,7 +462,7 @@ export const ShippingLabelModal: React.FC<ShippingLabelModalProps> = ({
                 <p className="font-medium text-black">Artisan Weavers Loom Unit, 142/A</p>
                 <p className="font-medium text-black">Kanchipuram, Tamil Nadu - 631501</p>
                 <p className="font-semibold text-black">GSTIN: 33AAACN1234A1Z6</p>
-                <p className="font-mono text-black font-black pt-1">Helpline: +91 78712 07631</p>
+                <p className="font-mono text-black font-black pt-1">Helpline: 6383163609 | 7871207631</p>
               </div>
 
               {/* Package Meta */}

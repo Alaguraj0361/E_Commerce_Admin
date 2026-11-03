@@ -52,19 +52,17 @@ export default function AdminDashboardPage() {
     );
   }
 
-  const { metrics, salesChart, recentOrders, lowStockProducts } = analytics || {
-    metrics: {
-      totalRevenue: 0,
-      totalOrders: 0,
-      totalCustomers: 0,
-      totalProducts: 0,
-      pendingOrders: 0,
-      lowStockCount: 0,
-    },
-    salesChart: [],
-    recentOrders: [],
-    lowStockProducts: [],
+  const metrics = analytics?.metrics || {
+    totalRevenue: 0,
+    totalOrders: 0,
+    totalCustomers: 0,
+    totalProducts: 0,
+    pendingOrders: 0,
+    lowStockCount: 0,
   };
+  const salesChart = Array.isArray(analytics?.salesChart) ? analytics.salesChart : [];
+  const recentOrders = Array.isArray(analytics?.recentOrders) ? analytics.recentOrders : [];
+  const lowStockProducts = Array.isArray(analytics?.lowStockProducts) ? analytics.lowStockProducts : [];
 
   const statCards = [
     {
@@ -194,7 +192,7 @@ export default function AdminDashboardPage() {
                   style={{ height: `${heightPercent}%` }}
                 />
                 <span className="text-[10px] font-mono text-[#7A6E63] truncate w-full text-center">
-                  {day.date.slice(5)}
+                  {(day?.date || '').slice(5)}
                 </span>
               </div>
             );

@@ -127,7 +127,7 @@ export default function AdminCouponsPage() {
   };
 
   const filteredCoupons = useMemo(() => {
-    return coupons.filter((c) => c.code.toLowerCase().includes(searchQuery.toLowerCase()));
+    return coupons.filter((c) => (c.code || '').toLowerCase().includes(searchQuery.toLowerCase()));
   }, [coupons, searchQuery]);
 
   return (

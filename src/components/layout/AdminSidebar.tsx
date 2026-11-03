@@ -140,11 +140,11 @@ export const AdminSidebar = ({ isOpen = false, onClose }: AdminSidebarProps) => 
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="w-8 h-8 rounded-full bg-[#F5EFEB] text-[#B8860B] flex items-center justify-center font-bold text-xs flex-shrink-0 border border-[#E0D5C3] shadow-xs">
-                {user.firstName[0]}
+                {user.firstName?.[0] || 'A'}
               </div>
               <div className="min-w-0">
                 <p className="text-xs font-semibold text-[#18140B] truncate">
-                  {user.firstName} {user.lastName}
+                  {user.firstName || 'Admin'} {user.lastName || ''}
                 </p>
                 <p className="text-[10px] text-[#7A6E63] truncate">{user.email}</p>
               </div>

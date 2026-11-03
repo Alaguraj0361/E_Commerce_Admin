@@ -142,13 +142,16 @@ export default function AdminProductsPage() {
     setEditingProduct(product);
     setIsSlugManuallyEdited(true);
     resetVariantInputs();
-    const catId = typeof product.category === 'object' ? product.category._id : product.category;
+    const catId =
+      product.category && typeof product.category === 'object'
+        ? product.category._id
+        : product.category;
     setFormData({
-      name: product.name,
-      slug: product.slug || slugify(product.name),
-      description: product.description,
+      name: product.name || '',
+      slug: product.slug || slugify(product.name || ''),
+      description: product.description || '',
       shortDescription: product.shortDescription || '',
-      category: catId || '',
+      category: catId || categories[0]?._id || '',
       price: product.price,
       compareAtPrice: product.compareAtPrice || 0,
       costPrice: product.costPrice || 0,
@@ -384,10 +387,10 @@ export default function AdminProductsPage() {
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       const matchesSearch =
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.sku?.toLowerCase().includes(searchQuery.toLowerCase());
+        (p.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (p.sku || '').toLowerCase().includes(searchQuery.toLowerCase());
 
-      const catId = typeof p.category === 'object' ? p.category._id : p.category;
+      const catId = p.category && typeof p.category === 'object' ? p.category._id : p.category;
       const matchesCat = selectedCategory === 'all' || catId === selectedCategory;
 
       return matchesSearch && matchesCat;
@@ -485,7 +488,9 @@ export default function AdminProductsPage() {
                     product.images?.[0]?.url ||
                     'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400';
                   const catName =
-                    typeof product.category === 'object' ? product.category?.name : 'Unassigned';
+                    product.category && typeof product.category === 'object'
+                      ? product.category.name || 'Unassigned'
+                      : categories.find((c) => c._id === product.category)?.name || 'Unassigned';
 
                   return (
                     <tr

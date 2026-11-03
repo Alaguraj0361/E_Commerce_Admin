@@ -177,8 +177,8 @@ export default function AdminOrdersPage() {
 
   const filteredOrders = useMemo(() => {
     return orders.filter((o) => {
-      const userObj = typeof o.user === 'object' ? o.user : null;
-      const userName = userObj ? `${userObj.firstName} ${userObj.lastName}` : '';
+      const userObj = o.user && typeof o.user === 'object' ? o.user : null;
+      const userName = userObj ? `${userObj.firstName || ''} ${userObj.lastName || ''}`.trim() : '';
       const userEmail = userObj?.email || '';
       const orderNum = o.orderNumber || '';
       const custName = o.shippingAddress?.fullName || '';
@@ -345,10 +345,11 @@ export default function AdminOrdersPage() {
                 </tr>
               ) : (
                 filteredOrders.map((order) => {
-                  const userObj = typeof order.user === 'object' ? order.user : null;
+                  const userObj = order.user && typeof order.user === 'object' ? order.user : null;
                   const customerName =
                     order.shippingAddress?.fullName ||
-                    (userObj ? `${userObj.firstName} ${userObj.lastName}` : 'Guest Customer');
+                    (userObj ? `${userObj.firstName || ''} ${userObj.lastName || ''}`.trim() : '') ||
+                    'Guest Customer';
                   const customerEmail = userObj?.email || 'Registered account';
 
                   return (
