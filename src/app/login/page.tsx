@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Lock, Mail, ShieldCheck, Loader2, KeyRound } from 'lucide-react';
+import { Lock, Mail, ShieldCheck, Loader2 } from 'lucide-react';
 import { api } from '../../lib/api';
 import { useAdminAuthStore } from '../../store/adminAuthStore';
 import { toast } from 'sonner';
@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
         }
 
         setUser(user);
-        toast.success(`Welcome to Command, ${user.firstName}!`);
+        toast.success(`Welcome back, ${user.firstName}!`);
         router.push('/');
       }
     } catch (error: any) {
@@ -45,102 +45,95 @@ export default function AdminLoginPage() {
     }
   };
 
-  const fillAdminCredentials = () => {
-    setEmail('admin@ecommerce.com');
-    setPassword('Admin@123456');
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[#FAF8F5]">
-      <div className="max-w-md w-full bg-white border border-[#EAE1D1] rounded-3xl p-8 sm:p-10 shadow-xl space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-3">
-          <div className="w-20 h-20 mx-auto relative drop-shadow-md">
-            <Image
-              src="/images/nalmara_emblem.png"
-              alt="NALMARA FASHION"
-              width={80}
-              height={80}
-              priority
-              className="w-full h-full object-contain"
-            />
-          </div>
-          <div>
-            <h1 className="text-2xl font-black uppercase tracking-wider text-[#18140B] font-serif">
-              NALMARA FASHION <span className="text-[#B8860B] font-mono text-base font-bold">ADMIN</span>
-            </h1>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF1E3] border border-[#E3D3B5] text-[#8C6D1F] text-[11px] font-semibold tracking-wider uppercase font-mono mt-2 shadow-xs">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#B8860B]" />
-              Operations Command Center
-            </div>
-          </div>
-          <p className="text-xs text-[#7A6E63] pt-0.5">
-            Internal Operations & Systems Management Portal
-          </p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-[#FDF6EC]">
+      <div className="max-w-md w-full rounded-3xl p-[2.5px] bg-gradient-to-b from-[#FFE59E] via-[#D4AF37] to-[#8C5818] shadow-[0_22px_54px_rgba(45,6,30,0.16)]">
+        <div className="bg-gradient-to-b from-[#FFFDF9] via-[#FAF0DD] to-[#F3E0C0] rounded-[22px] p-8 sm:p-10 space-y-7 relative">
+          <div className="absolute inset-2.5 rounded-[16px] border border-[#D4AF37]/35 pointer-events-none" />
 
-        {/* Quick Fill Button */}
-        <div className="p-4 bg-[#FAF7F2] rounded-2xl border border-[#EAE1D1] text-xs flex items-center justify-between">
-          <div>
-            <span className="font-bold text-[#18140B] block">Master Admin Access</span>
-            <span className="text-[11px] text-[#7A6E63] font-mono">admin@ecommerce.com</span>
-          </div>
-          <button
-            type="button"
-            onClick={fillAdminCredentials}
-            className="px-3 py-1.5 bg-white hover:bg-[#F5EFEB] border border-[#E0D5C3] text-[#B8860B] rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-xs"
-          >
-            <KeyRound className="w-3.5 h-3.5" /> Auto-Fill
-          </button>
-        </div>
-
-        {/* Login Form */}
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-[#5C5248] mb-1.5">
-              Admin Email Address
-            </label>
-            <div className="relative">
-              <Mail className="w-4 h-4 text-[#8C7E72] absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@ecommerce.com"
-                className="w-full bg-[#FAF8F5] border border-[#E0D5C3] rounded-xl py-3 pl-10 pr-4 text-sm text-[#18140B] placeholder-[#9E9488] focus:outline-none focus:border-[#B8860B] focus:bg-white transition-colors"
+          {/* Header */}
+          <div className="text-center space-y-3 relative z-10">
+            <div className="w-20 h-20 mx-auto relative rounded-full overflow-hidden border-2 border-[#D4AF37] bg-[#0E0B09] shadow-md">
+              <Image
+                src="/images/nalmara-logo.jpg"
+                alt="NALMARA FASHION"
+                width={80}
+                height={80}
+                priority
+                unoptimized
+                className="w-full h-full object-cover scale-[1.35]"
               />
             </div>
-          </div>
-
-          <div>
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-[#5C5248] mb-1.5">
-              Secure Password
-            </label>
-            <div className="relative">
-              <Lock className="w-4 h-4 text-[#8C7E72] absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-[#FAF8F5] border border-[#E0D5C3] rounded-xl py-3 pl-10 pr-4 text-sm text-[#18140B] placeholder-[#9E9488] focus:outline-none focus:border-[#B8860B] focus:bg-white transition-colors"
-              />
+            <div>
+              <h1 className="text-2xl font-black uppercase tracking-wider text-[#23120B] font-serif">
+                NALMARA FASHION{' '}
+                <span className="text-[#681145] font-mono text-sm font-bold">ADMIN</span>
+              </h1>
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#380725] border border-[#D4AF37] text-[#FFE59E] text-[10px] font-bold tracking-wider uppercase font-mono mt-2 shadow-2xs">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#FFE59E]" />
+                Operations Command Center
+              </div>
             </div>
+            <p className="text-xs text-[#5C3D1E] pt-0.5 font-medium">
+              Authorized Storefront &amp; Catalog Management Portal
+            </p>
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-gradient-to-r from-[#D4AF37] via-[#C5A262] to-[#B8860B] hover:brightness-105 text-white py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50 mt-4 active:scale-[0.99]"
-          >
-            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Enter Operations Console'}
-          </button>
-        </form>
+          {/* Login Form */}
+          <form onSubmit={handleLogin} className="space-y-4 relative z-10">
+            <div>
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-[#23120B] mb-1.5">
+                Administrator Email
+              </label>
+              <div className="relative">
+                <Mail className="w-4 h-4 text-[#8C6518] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter administrator email"
+                  className="w-full bg-[#FFFDF9] border border-[#D4AF37]/75 rounded-xl py-3 pl-10 pr-4 text-sm text-[#23120B] placeholder-[#8C7E72] focus:outline-none focus:ring-2 focus:ring-[#D4AF37] transition-colors"
+                />
+              </div>
+            </div>
 
-        <div className="text-center pt-2 text-[11px] text-[#7A6E63]">
-          Security Level: Tier 1 Administrative Gateway
+            <div>
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-[#23120B] mb-1.5">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-[#8C6518] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="w-full bg-[#FFFDF9] border border-[#D4AF37]/75 rounded-xl py-3 pl-10 pr-4 text-sm text-[#23120B] placeholder-[#8C7E72] focus:outline-none focus:ring-2 focus:ring-[#D4AF37] transition-colors"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-[#5B0E3D] via-[#3D0829] to-[#5B0E3D] hover:from-[#73124C] hover:to-[#4E0B34] text-[#FFE59E] border border-[#D4AF37] py-3.5 rounded-full text-xs font-serif font-bold uppercase tracking-[0.18em] transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50 mt-4 active:scale-[0.99] cursor-pointer"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin text-[#FFE59E]" />
+                  Authenticating...
+                </>
+              ) : (
+                'Sign In to Admin Console'
+              )}
+            </button>
+          </form>
+
+          <div className="text-center pt-1 text-[11px] text-[#6B5035] relative z-10">
+            NALMARA FASHION • Thoothukudi, Tamil Nadu
+          </div>
         </div>
       </div>
     </div>

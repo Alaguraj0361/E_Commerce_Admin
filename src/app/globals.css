@@ -4,31 +4,34 @@
 
 @layer base {
   :root {
-    --background: #FAF8F5;
-    --foreground: #18140B;
-    --card: #FFFFFF;
-    --card-foreground: #18140B;
-    --border: #EAE1D1;
+    --background: #FDF6EC;
+    --foreground: #23120B;
+    --card: #FFFDF9;
+    --card-foreground: #23120B;
+    --border: #D4AF37;
     --gold: #B8860B;
   }
 
   body {
-    @apply bg-[#FAF8F5] text-zinc-900 antialiased selection:bg-amber-100 selection:text-amber-900;
+    @apply bg-[#FDF6EC] text-[#23120B] antialiased selection:bg-[#380725] selection:text-[#FFE59E];
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(212, 175, 55, 0.08) 0%, transparent 45%),
+      radial-gradient(circle at 85% 40%, rgba(91, 14, 61, 0.04) 0%, transparent 50%);
   }
 }
 
-/* Custom Scrollbar */
+/* Custom Royal 24K Gold Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #FAF8F5;
+  background: #FAF0DD;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D8CEBD;
+  background: linear-gradient(180deg, #FFE59E 0%, #D4AF37 50%, #8C5818 100%);
   border-radius: 9999px;
 }
 

@@ -57,13 +57,16 @@ export const AdminLayoutWrapper = ({ children }: { children: React.ReactNode }) 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#FAF8F5] flex flex-col items-center justify-center gap-3 text-[#8C7E72] text-xs">
-        <Image
-          src="/images/nalmara_emblem.png"
-          alt="Nalmara"
-          width={44}
-          height={44}
-          className="w-11 h-11 object-contain animate-pulse"
-        />
+        <div className="w-12 h-12 rounded-full overflow-hidden border border-[#D4AF37] bg-[#0E0B09] shadow-md">
+          <Image
+            src="/images/nalmara-logo.jpg"
+            alt="Nalmara"
+            width={48}
+            height={48}
+            unoptimized
+            className="w-full h-full object-cover scale-[1.35] animate-pulse"
+          />
+        </div>
         <span>Authenticating administrator...</span>
       </div>
     );
@@ -101,14 +104,15 @@ export const AdminLayoutWrapper = ({ children }: { children: React.ReactNode }) 
             </button>
 
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-7 h-7 relative flex-shrink-0 drop-shadow-xs">
+              <div className="w-8 h-8 relative rounded-full overflow-hidden border border-[#D4AF37] bg-[#0E0B09] flex-shrink-0 drop-shadow-xs">
                 <Image
-                  src="/images/nalmara_emblem.png"
+                  src="/images/nalmara-logo.jpg"
                   alt="NALMARA"
-                  width={28}
-                  height={28}
+                  width={32}
+                  height={32}
                   priority
-                  className="w-full h-full object-contain"
+                  unoptimized
+                  className="w-full h-full object-cover scale-[1.35]"
                 />
               </div>
               <div className="flex items-center gap-1.5">

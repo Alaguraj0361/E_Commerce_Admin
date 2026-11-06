@@ -111,27 +111,27 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-8">
-      {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#EAE1D1]">
+      {/* Royal Palace Header Banner */}
+      <div className="relative rounded-3xl bg-gradient-to-r from-[#280619] via-[#3D0829] to-[#280619] border-2 border-[#D4AF37] p-6 sm:p-8 text-white shadow-[0_14px_34px_rgba(40,6,25,0.2)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-[11px] font-bold uppercase tracking-widest text-[#B8860B]">
-            Executive Summary
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#FFE59E] px-3 py-1 rounded-full bg-[#380725] border border-[#D4AF37]/80">
+            ✦ Nalmara Fashion • Executive Suite
           </span>
-          <h1 className="text-3xl font-black text-[#18140B] tracking-tight mt-1">
-            Operations Command
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-[#FFFDF9] tracking-tight mt-2">
+            Royal Operations Command
           </h1>
         </div>
 
         <div className="flex items-center gap-3">
           <Link
             href="/products"
-            className="bg-gradient-to-r from-[#D4AF37] to-[#B8860B] hover:brightness-105 text-white px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 active:scale-95"
+            className="bg-gradient-to-r from-[#FFF6D6] via-[#FFE59E] to-[#D4AF37] hover:brightness-105 text-[#280619] border border-[#FFFDF9] px-5 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5 active:scale-95"
           >
             <Plus className="w-4 h-4" /> Add Product
           </Link>
           <Link
             href="/orders"
-            className="bg-white hover:bg-[#F5EFEB] text-[#18140B] border border-[#EAE1D1] px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors shadow-xs"
+            className="bg-[#380725] hover:bg-[#5B0E3D] text-[#FFE59E] border border-[#D4AF37] px-5 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition-colors shadow-xs"
           >
             Review Orders
           </Link>
