@@ -737,6 +737,7 @@ function MeasurementsContent() {
                             <body>
                               <div class="header">
                                 <h1>NALMARA FASHION • Atelier Job Sheet</h1>
+                                <p style="margin: 2px 0 8px 0; font-size: 11px; color: #555;">Store &amp; Atelier: Q4R8+3FC, 3rd Mile, Near Bus Stop, Thoothukudi, 628008</p>
                                 <p>Client: <strong>${viewingMeasurement.customerName}</strong> (${viewingMeasurement.customerPhone}) | Date: ${viewingMeasurement.date}</p>
                                 <p>Garment: <strong>${viewingMeasurement.categoryName}</strong> | Code: <strong>${viewingMeasurement.measurementCode}</strong></p>
                               </div>

@@ -1380,6 +1380,7 @@ function DispatchContent() {
                             </head>
                             <body>
                               <h1>NALMARA FASHION • Atelier Workshop Job Card</h1>
+                              <p style="margin: 3px 0 10px 0; font-size: 11px; color: #555;">Store &amp; Atelier: Q4R8+3FC, 3rd Mile, Near Bus Stop, Thoothukudi, 628008</p>
                               <p>Job #: <strong>${viewingOrder.stitchingOrderNumber}</strong> | Date: <strong>${viewingOrder.date}</strong> | Priority: <strong>${viewingOrder.priority}</strong></p>
                               <div class="border-box">
                                 <p>Client: <strong>${viewingOrder.customerName}</strong> (${viewingOrder.customerPhone})</p>

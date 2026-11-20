@@ -459,8 +459,8 @@ export const ShippingLabelModal: React.FC<ShippingLabelModalProps> = ({
                   SHIPPER / RETURN TO:
                 </span>
                 <p className="font-black text-black text-xs">NALMARA FASHION PVT. LTD.</p>
-                <p className="font-medium text-black">Artisan Weavers Loom Unit, 142/A</p>
-                <p className="font-medium text-black">Kanchipuram, Tamil Nadu - 631501</p>
+                <p className="font-medium text-black">Q4R8+3FC, 3rd Mile, Near Bus Stop</p>
+                <p className="font-medium text-black">Thoothukudi, Tamil Nadu - 628008</p>
                 <p className="font-semibold text-black">GSTIN: 33AAACN1234A1Z6</p>
                 <p className="font-mono text-black font-black pt-1">Helpline: 6383163609 | 7871207631</p>
               </div>
