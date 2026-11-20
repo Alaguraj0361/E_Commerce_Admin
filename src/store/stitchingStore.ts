@@ -4,6 +4,7 @@ import {
   StitchingMeasurement,
   StitchingDispatchOrder,
 } from '../types';
+import { api } from '../lib/api';
 
 const INITIAL_CATEGORIES: StitchingCategory[] = [
   {
@@ -364,34 +365,41 @@ interface StitchingState {
   categories: StitchingCategory[];
   measurements: StitchingMeasurement[];
   dispatchOrders: StitchingDispatchOrder[];
+  isLoading: boolean;
+
+  // Live Backend Sync Actions
+  fetchCategories: () => Promise<void>;
+  fetchMeasurements: () => Promise<void>;
+  fetchDispatchOrders: () => Promise<void>;
+  fetchAll: () => Promise<void>;
 
   // Category Actions
-  addCategory: (category: Omit<StitchingCategory, '_id'>) => StitchingCategory;
-  updateCategory: (id: string, updates: Partial<StitchingCategory>) => void;
-  deleteCategory: (id: string) => void;
+  addCategory: (category: Omit<StitchingCategory, '_id'>) => Promise<StitchingCategory>;
+  updateCategory: (id: string, updates: Partial<StitchingCategory>) => Promise<void>;
+  deleteCategory: (id: string) => Promise<void>;
   getCategoryBySlug: (slug: string) => StitchingCategory | undefined;
 
   // Measurement Actions
   addMeasurement: (
     measurement: Omit<StitchingMeasurement, '_id' | 'measurementCode' | 'createdAt'>
-  ) => StitchingMeasurement;
-  updateMeasurement: (id: string, updates: Partial<StitchingMeasurement>) => void;
-  deleteMeasurement: (id: string) => void;
+  ) => Promise<StitchingMeasurement>;
+  updateMeasurement: (id: string, updates: Partial<StitchingMeasurement>) => Promise<void>;
+  deleteMeasurement: (id: string) => Promise<void>;
   getMeasurementById: (idOrCode: string) => StitchingMeasurement | undefined;
   getMeasurementsByCustomer: (customerNameOrPhone: string) => StitchingMeasurement[];
 
   // Dispatch Order Actions
   addDispatchOrder: (
     order: Omit<StitchingDispatchOrder, '_id' | 'stitchingOrderNumber' | 'createdAt'>
-  ) => StitchingDispatchOrder;
-  updateDispatchOrder: (id: string, updates: Partial<StitchingDispatchOrder>) => void;
-  deleteDispatchOrder: (id: string) => void;
+  ) => Promise<StitchingDispatchOrder>;
+  updateDispatchOrder: (id: string, updates: Partial<StitchingDispatchOrder>) => Promise<void>;
+  deleteDispatchOrder: (id: string) => Promise<void>;
   updateDispatchStatus: (
     id: string,
     status: StitchingDispatchOrder['status'],
     trackingNumber?: string,
     courierPartner?: string
-  ) => void;
+  ) => Promise<void>;
 
   // Reset / Reload
   resetToDefaults: () => void;
@@ -458,11 +466,86 @@ export const useStitchingStore = create<StitchingState>((set, get) => {
     categories: initial.categories,
     measurements: initial.measurements,
     dispatchOrders: initial.dispatchOrders,
+    isLoading: false,
+
+    // -------------------------------------------------------------
+    // Live Backend Sync Actions
+    // -------------------------------------------------------------
+    fetchCategories: async () => {
+      try {
+        const res = await api.get('/stitching/categories');
+        if (res.data?.success && Array.isArray(res.data.data) && res.data.data.length > 0) {
+          set((state) => {
+            const categories = res.data.data;
+            persistState({ ...state, categories });
+            return { categories };
+          });
+        }
+      } catch (err) {
+        console.warn('Stitching categories API fetch fallback to local:', err);
+      }
+    },
+
+    fetchMeasurements: async () => {
+      set({ isLoading: true });
+      try {
+        const res = await api.get('/stitching/measurements');
+        if (res.data?.success && Array.isArray(res.data.data)) {
+          set((state) => {
+            const serverMeas: StitchingMeasurement[] = res.data.data;
+            const serverCodes = new Set(serverMeas.map((m) => m.measurementCode));
+            const merged = [
+              ...serverMeas,
+              ...state.measurements.filter((m) => !serverCodes.has(m.measurementCode)),
+            ];
+            persistState({ ...state, measurements: merged });
+            return { measurements: merged, isLoading: false };
+          });
+          return;
+        }
+      } catch (err) {
+        console.warn('Stitching measurements API fetch fallback to local:', err);
+      } finally {
+        set({ isLoading: false });
+      }
+    },
+
+    fetchDispatchOrders: async () => {
+      set({ isLoading: true });
+      try {
+        const res = await api.get('/stitching/dispatch-orders');
+        if (res.data?.success && Array.isArray(res.data.data)) {
+          set((state) => {
+            const serverOrders: StitchingDispatchOrder[] = res.data.data;
+            const serverOrderNums = new Set(serverOrders.map((o) => o.stitchingOrderNumber));
+            const merged = [
+              ...serverOrders,
+              ...state.dispatchOrders.filter((o) => !serverOrderNums.has(o.stitchingOrderNumber)),
+            ];
+            persistState({ ...state, dispatchOrders: merged });
+            return { dispatchOrders: merged, isLoading: false };
+          });
+          return;
+        }
+      } catch (err) {
+        console.warn('Stitching dispatch orders API fetch fallback to local:', err);
+      } finally {
+        set({ isLoading: false });
+      }
+    },
+
+    fetchAll: async () => {
+      await Promise.allSettled([
+        get().fetchCategories(),
+        get().fetchMeasurements(),
+        get().fetchDispatchOrders(),
+      ]);
+    },
 
     // -------------------------------------------------------------
     // Category Actions
     // -------------------------------------------------------------
-    addCategory: (newCat) => {
+    addCategory: async (newCat) => {
       const id = `scat-${Date.now()}`;
       const created: StitchingCategory = {
         ...newCat,
@@ -475,10 +558,24 @@ export const useStitchingStore = create<StitchingState>((set, get) => {
         persistState(next);
         return { categories: next.categories };
       });
+
+      try {
+        const res = await api.post('/stitching/categories', newCat);
+        if (res.data?.success && res.data.data?._id) {
+          const serverCreated = res.data.data;
+          set((state) => {
+            const updated = state.categories.map((c) => (c._id === id ? serverCreated : c));
+            persistState({ ...state, categories: updated });
+            return { categories: updated };
+          });
+        }
+      } catch (err) {
+        console.warn('Category created locally; server sync deferred:', err);
+      }
       return created;
     },
 
-    updateCategory: (id, updates) => {
+    updateCategory: async (id, updates) => {
       set((state) => {
         const updated = state.categories.map((c) =>
           c._id === id ? { ...c, ...updates, updatedAt: new Date().toISOString() } : c
@@ -486,14 +583,26 @@ export const useStitchingStore = create<StitchingState>((set, get) => {
         persistState({ ...state, categories: updated });
         return { categories: updated };
       });
+
+      try {
+        await api.put(`/stitching/categories/${id}`, updates);
+      } catch (err) {
+        console.warn('Category updated locally; server sync deferred:', err);
+      }
     },
 
-    deleteCategory: (id) => {
+    deleteCategory: async (id) => {
       set((state) => {
         const filtered = state.categories.filter((c) => c._id !== id);
         persistState({ ...state, categories: filtered });
         return { categories: filtered };
       });
+
+      try {
+        await api.delete(`/stitching/categories/${id}`);
+      } catch (err) {
+        console.warn('Category deleted locally; server sync deferred:', err);
+      }
     },
 
     getCategoryBySlug: (slug) => {
@@ -503,7 +612,7 @@ export const useStitchingStore = create<StitchingState>((set, get) => {
     // -------------------------------------------------------------
     // Measurement Actions
     // -------------------------------------------------------------
-    addMeasurement: (data) => {
+    addMeasurement: async (data) => {
       const count = get().measurements.length + 1001;
       const code = `MEAS-${count}`;
       const id = `meas-${Date.now()}`;
@@ -522,10 +631,24 @@ export const useStitchingStore = create<StitchingState>((set, get) => {
         return { measurements: next.measurements };
       });
 
+      try {
+        const res = await api.post('/stitching/measurements', data);
+        if (res.data?.success && res.data.data?._id) {
+          const serverCreated = res.data.data;
+          set((state) => {
+            const updated = state.measurements.map((m) => (m._id === id ? serverCreated : m));
+            persistState({ ...state, measurements: updated });
+            return { measurements: updated };
+          });
+        }
+      } catch (err) {
+        console.warn('Measurement recorded locally; server sync deferred:', err);
+      }
+
       return created;
     },
 
-    updateMeasurement: (id, updates) => {
+    updateMeasurement: async (id, updates) => {
       set((state) => {
         const updated = state.measurements.map((m) =>
           m._id === id || m.measurementCode === id
@@ -535,9 +658,15 @@ export const useStitchingStore = create<StitchingState>((set, get) => {
         persistState({ ...state, measurements: updated });
         return { measurements: updated };
       });
+
+      try {
+        await api.put(`/stitching/measurements/${id}`, updates);
+      } catch (err) {
+        console.warn('Measurement updated locally; server sync deferred:', err);
+      }
     },
 
-    deleteMeasurement: (id) => {
+    deleteMeasurement: async (id) => {
       set((state) => {
         const filtered = state.measurements.filter(
           (m) => m._id !== id && m.measurementCode !== id
@@ -545,6 +674,12 @@ export const useStitchingStore = create<StitchingState>((set, get) => {
         persistState({ ...state, measurements: filtered });
         return { measurements: filtered };
       });
+
+      try {
+        await api.delete(`/stitching/measurements/${id}`);
+      } catch (err) {
+        console.warn('Measurement deleted locally; server sync deferred:', err);
+      }
     },
 
     getMeasurementById: (idOrCode) => {
@@ -570,7 +705,7 @@ export const useStitchingStore = create<StitchingState>((set, get) => {
     // -------------------------------------------------------------
     // Dispatch Order Actions
     // -------------------------------------------------------------
-    addDispatchOrder: (data) => {
+    addDispatchOrder: async (data) => {
       const count = get().dispatchOrders.length + 2001;
       const number = `STITCH-${count}`;
       const id = `stitch-${Date.now()}`;
@@ -589,10 +724,24 @@ export const useStitchingStore = create<StitchingState>((set, get) => {
         return { dispatchOrders: next.dispatchOrders };
       });
 
+      try {
+        const res = await api.post('/stitching/dispatch-orders', data);
+        if (res.data?.success && res.data.data?._id) {
+          const serverCreated = res.data.data;
+          set((state) => {
+            const updated = state.dispatchOrders.map((o) => (o._id === id ? serverCreated : o));
+            persistState({ ...state, dispatchOrders: updated });
+            return { dispatchOrders: updated };
+          });
+        }
+      } catch (err) {
+        console.warn('Order recorded locally; server sync deferred:', err);
+      }
+
       return created;
     },
 
-    updateDispatchOrder: (id, updates) => {
+    updateDispatchOrder: async (id, updates) => {
       set((state) => {
         const updated = state.dispatchOrders.map((o) =>
           o._id === id || o.stitchingOrderNumber === id
@@ -602,9 +751,15 @@ export const useStitchingStore = create<StitchingState>((set, get) => {
         persistState({ ...state, dispatchOrders: updated });
         return { dispatchOrders: updated };
       });
+
+      try {
+        await api.put(`/stitching/dispatch-orders/${id}`, updates);
+      } catch (err) {
+        console.warn('Order updated locally; server sync deferred:', err);
+      }
     },
 
-    deleteDispatchOrder: (id) => {
+    deleteDispatchOrder: async (id) => {
       set((state) => {
         const filtered = state.dispatchOrders.filter(
           (o) => o._id !== id && o.stitchingOrderNumber !== id
@@ -612,9 +767,15 @@ export const useStitchingStore = create<StitchingState>((set, get) => {
         persistState({ ...state, dispatchOrders: filtered });
         return { dispatchOrders: filtered };
       });
+
+      try {
+        await api.delete(`/stitching/dispatch-orders/${id}`);
+      } catch (err) {
+        console.warn('Order deleted locally; server sync deferred:', err);
+      }
     },
 
-    updateDispatchStatus: (id, status, trackingNumber, courierPartner) => {
+    updateDispatchStatus: async (id, status, trackingNumber, courierPartner) => {
       set((state) => {
         const updated = state.dispatchOrders.map((o) => {
           if (o._id === id || o.stitchingOrderNumber === id) {
@@ -634,6 +795,16 @@ export const useStitchingStore = create<StitchingState>((set, get) => {
         persistState({ ...state, dispatchOrders: updated });
         return { dispatchOrders: updated };
       });
+
+      try {
+        await api.put(`/stitching/dispatch-orders/${id}`, {
+          status,
+          ...(trackingNumber !== undefined ? { trackingNumber } : {}),
+          ...(courierPartner !== undefined ? { courierPartner } : {}),
+        });
+      } catch (err) {
+        console.warn('Order status updated locally; server sync deferred:', err);
+      }
     },
 
     resetToDefaults: () => {

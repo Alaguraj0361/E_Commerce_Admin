@@ -15,6 +15,7 @@ import {
   Plus,
   ArrowUpRight,
   Printer,
+  Scissors,
 } from 'lucide-react';
 import { api } from '../lib/api';
 import { formatCurrency, formatDate } from '../lib/utils';
@@ -118,7 +119,7 @@ export default function AdminDashboardPage() {
       {/* Royal Palace Header Banner */}
       <div className="relative rounded-3xl bg-gradient-to-r from-[#280619] via-[#3D0829] to-[#280619] border-2 border-[#D4AF37] p-6 sm:p-8 text-white shadow-[0_14px_34px_rgba(40,6,25,0.2)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#FFE59E] px-3 py-1 rounded-full bg-[#380725] border border-[#D4AF37]/80">
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#FFE59E] px-3 py-1 rounded-full bg-[#760159] border border-[#D4AF37]/80">
             ✦ Nalmara Fashion • Executive Suite
           </span>
           <h1 className="text-2xl sm:text-3xl font-serif font-bold text-[#FFFDF9] tracking-tight mt-2">
@@ -135,9 +136,16 @@ export default function AdminDashboardPage() {
           </Link>
           <Link
             href="/orders"
-            className="bg-[#380725] hover:bg-[#5B0E3D] text-[#FFE59E] border border-[#D4AF37] px-5 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition-colors shadow-xs"
+            className="bg-[#760159] hover:bg-[#5B0E3D] text-[#FFE59E] border border-[#D4AF37] px-5 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition-colors shadow-xs"
           >
             Review Orders
+          </Link>
+          <Link
+            href="/stitching/dispatch"
+            className="bg-gradient-to-r from-[#FFF6D6] via-[#FFE59E] to-[#D4AF37] hover:scale-105 text-[#280619] border border-[#FFFDF9] px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5"
+          >
+            <Scissors className="w-3.5 h-3.5 text-[#280619]" />
+            <span>Stitching Atelier</span>
           </Link>
         </div>
       </div>

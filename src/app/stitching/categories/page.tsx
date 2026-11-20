@@ -167,20 +167,20 @@ export default function StitchingCategoriesPage() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-7 max-w-[1680px] mx-auto min-h-screen text-[#2A0E1B]">
       {/* Top Haute Couture Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#200414] via-[#350723] to-[#200414] p-6 sm:p-8 text-[#FFFDF9] border border-[#D4AF37]/50 shadow-xl">
-        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-[#D4AF37]/15 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-[#D4AF37]/10 blur-3xl pointer-events-none" />
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#54013F] via-[#760159] to-[#450035] p-6 sm:p-8 text-[#FFFDF9] border-2 border-[#D4AF37]/70 shadow-2xl">
+        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-[#FFE59E]/15 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-[#D4AF37]/15 blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#FFE59E] text-xs font-serif font-bold tracking-widest uppercase">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/25 border border-[#FFE59E]/50 text-[#FFE59E] text-xs font-serif font-bold tracking-widest uppercase backdrop-blur-md">
               <Sliders className="w-3.5 h-3.5 text-[#FFE59E]" />
               <span>Garment Atelier Architecture</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-serif font-bold tracking-tight text-white flex items-center gap-3">
+            <h1 className="text-2xl sm:text-4xl font-serif font-bold tracking-tight text-white flex items-center gap-3 drop-shadow-md">
               Stitching Categories Master
             </h1>
-            <p className="text-xs sm:text-sm text-[#FFE59E]/80 max-w-2xl font-light leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#FFE59E]/90 max-w-2xl font-light leading-relaxed">
               Configure bespoke garment categories, standard turnaround timelines, baseline atelier stitching pricing, and custom dynamic measurement field templates.
             </p>
           </div>
@@ -188,23 +188,23 @@ export default function StitchingCategoriesPage() {
           <div className="flex flex-wrap items-center gap-3">
             <Link
               href="/stitching/dispatch"
-              className="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-[#D4AF37]/60 text-[#FFE8A3] text-xs font-serif font-bold flex items-center gap-2 backdrop-blur-md transition-all shadow-sm hover:scale-[1.02]"
+              className="px-4 py-2.5 rounded-2xl bg-[#54013F]/60 hover:bg-[#760159] border border-[#FFE59E]/60 text-[#FFE8A3] text-xs font-serif font-bold flex items-center gap-2 backdrop-blur-md transition-all shadow-md hover:scale-[1.02]"
             >
-              <Package className="w-4 h-4 text-[#D4AF37]" />
+              <Package className="w-4 h-4 text-[#FFE59E]" />
               <span>Dispatch Details</span>
             </Link>
             <Link
               href="/stitching/measurements"
-              className="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-[#D4AF37]/60 text-[#FFE8A3] text-xs font-serif font-bold flex items-center gap-2 backdrop-blur-md transition-all shadow-sm hover:scale-[1.02]"
+              className="px-4 py-2.5 rounded-2xl bg-[#54013F]/60 hover:bg-[#760159] border border-[#FFE59E]/60 text-[#FFE8A3] text-xs font-serif font-bold flex items-center gap-2 backdrop-blur-md transition-all shadow-md hover:scale-[1.02]"
             >
-              <Ruler className="w-4 h-4 text-[#D4AF37]" />
+              <Ruler className="w-4 h-4 text-[#FFE59E]" />
               <span>Customer Measurements</span>
             </Link>
             <button
               onClick={openCreateModal}
-              className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#FFF6D6] via-[#FFE59E] to-[#D4AF37] text-[#200414] text-xs font-serif font-black uppercase tracking-wider flex items-center gap-2 shadow-[0_4px_20px_rgba(212,175,55,0.35)] hover:shadow-[0_6px_25px_rgba(212,175,55,0.5)] hover:scale-[1.03] transition-all cursor-pointer border border-[#FFFDF9]"
+              className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#FFF6D6] via-[#FFE59E] to-[#D4AF37] text-[#450035] text-xs font-serif font-black uppercase tracking-wider flex items-center gap-2 shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_25px_rgba(212,175,55,0.6)] hover:scale-[1.03] transition-all cursor-pointer border border-[#FFFDF9]"
             >
-              <Plus className="w-4 h-4 text-[#200414] stroke-[3]" />
+              <Plus className="w-4 h-4 text-[#450035] stroke-[3]" />
               <span>New Category</span>
             </button>
           </div>
@@ -489,7 +489,7 @@ export default function StitchingCategoriesPage() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
           <div className="bg-[#FFFDF9] rounded-3xl border-2 border-[#D4AF37] max-w-2xl w-full my-8 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-6 bg-gradient-to-r from-[#200414] to-[#3D0A26] text-[#FFFDF9] flex items-center justify-between border-b-2 border-[#D4AF37]">
+            <div className="p-6 bg-gradient-to-r from-[#54013F] via-[#760159] to-[#450035] text-[#FFFDF9] flex items-center justify-between border-b-2 border-[#D4AF37]">
               <div>
                 <span className="text-[10px] font-serif font-bold uppercase tracking-widest text-[#FFE8A3]">
                   Stitching Master Database

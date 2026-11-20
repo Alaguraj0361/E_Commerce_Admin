@@ -80,7 +80,18 @@ function DispatchContent() {
     updateDispatchOrder,
     deleteDispatchOrder,
     updateDispatchStatus,
+    fetchDispatchOrders,
+    fetchMeasurements,
+    fetchCategories,
+    isLoading,
   } = useStitchingStore();
+
+  // Load live data on mount
+  React.useEffect(() => {
+    fetchDispatchOrders();
+    fetchMeasurements();
+    fetchCategories();
+  }, [fetchDispatchOrders, fetchMeasurements, fetchCategories]);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -231,7 +242,7 @@ function DispatchContent() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customerName.trim() || !customerPhone.trim() || !categorySlug || !estimatedDispatchDate) {
       toast.error('Please fill in required fields: Customer Name, Phone, Category, and Estimated Date');
@@ -259,7 +270,7 @@ function DispatchContent() {
     const balanceDue = Math.max(0, Number(stitchingCharge) - Number(advancePaid));
 
     if (editingOrder) {
-      updateDispatchOrder(editingOrder._id, {
+      await updateDispatchOrder(editingOrder._id, {
         date,
         customerName: customerName.trim(),
         customerPhone: customerPhone.trim(),
@@ -285,7 +296,7 @@ function DispatchContent() {
       });
       toast.success(`Job ${editingOrder.stitchingOrderNumber} updated successfully!`);
     } else {
-      const created = addDispatchOrder({
+      const created = await addDispatchOrder({
         date,
         customerName: customerName.trim(),
         customerPhone: customerPhone.trim(),
@@ -309,7 +320,7 @@ function DispatchContent() {
         trackingNumber: trackingNumber.trim(),
         notes: notes.trim(),
       });
-      toast.success(`Stitching job ${created.stitchingOrderNumber} created successfully!`);
+      toast.success(`Stitching job ${created?.stitchingOrderNumber || 'Order'} created successfully!`);
     }
 
     setIsFormModalOpen(false);
@@ -464,46 +475,59 @@ function DispatchContent() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-7 max-w-[1680px] mx-auto min-h-screen text-[#2A0E1B]">
       {/* Top Haute Couture Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#200414] via-[#350723] to-[#200414] p-6 sm:p-8 text-[#FFFDF9] border border-[#D4AF37]/50 shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#54013F] via-[#760159] to-[#450035] p-6 sm:p-8 text-[#FFFDF9] border-2 border-[#D4AF37]/70 shadow-2xl">
         {/* Decorative Golden Ambient Glows */}
-        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-[#D4AF37]/15 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-[#D4AF37]/10 blur-3xl pointer-events-none" />
+        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-[#FFE59E]/15 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-[#D4AF37]/15 blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#FFE59E] text-xs font-serif font-bold tracking-widest uppercase">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/25 border border-[#FFE59E]/50 text-[#FFE59E] text-xs font-serif font-bold tracking-widest uppercase backdrop-blur-md">
               <Sparkles className="w-3.5 h-3.5 text-[#FFE59E]" />
               <span>Nalmara Haute Couture Atelier</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-serif font-bold tracking-tight text-white flex items-center gap-3">
+            <h1 className="text-2xl sm:text-4xl font-serif font-bold tracking-tight text-white flex items-center gap-3 drop-shadow-md">
               Stitching Product Dispatch Details
             </h1>
-            <p className="text-xs sm:text-sm text-[#FFE59E]/80 max-w-2xl font-light leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#FFE59E]/90 max-w-2xl font-light leading-relaxed">
               Track custom tailoring orders, client measurements, artisan tailor allocations, priority deadlines, and courier dispatch logistics.
             </p>
           </div>
 
           {/* Action Hub */}
           <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                fetchDispatchOrders();
+                fetchMeasurements();
+                fetchCategories();
+                toast.success('Live stitching database refreshed');
+              }}
+              className="px-4 py-2.5 rounded-2xl bg-[#54013F]/60 hover:bg-[#760159] border border-[#FFE59E]/60 text-[#FFE8A3] text-xs font-serif font-bold flex items-center gap-2 backdrop-blur-md transition-all shadow-md hover:scale-[1.02] cursor-pointer"
+            >
+              <RotateCcw className={`w-4 h-4 text-[#FFE59E] ${isLoading ? 'animate-spin' : ''}`} />
+              <span>Refresh</span>
+            </button>
             <Link
               href="/stitching/measurements"
-              className="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-[#D4AF37]/60 text-[#FFE8A3] text-xs font-serif font-bold flex items-center gap-2 backdrop-blur-md transition-all shadow-sm hover:scale-[1.02]"
+              className="px-4 py-2.5 rounded-2xl bg-[#54013F]/60 hover:bg-[#760159] border border-[#FFE59E]/60 text-[#FFE8A3] text-xs font-serif font-bold flex items-center gap-2 backdrop-blur-md transition-all shadow-md hover:scale-[1.02]"
             >
-              <Ruler className="w-4 h-4 text-[#D4AF37]" />
+              <Ruler className="w-4 h-4 text-[#FFE59E]" />
               <span>Customer Measurements</span>
             </Link>
             <Link
               href="/stitching/categories"
-              className="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-[#D4AF37]/60 text-[#FFE8A3] text-xs font-serif font-bold flex items-center gap-2 backdrop-blur-md transition-all shadow-sm hover:scale-[1.02]"
+              className="px-4 py-2.5 rounded-2xl bg-[#54013F]/60 hover:bg-[#760159] border border-[#FFE59E]/60 text-[#FFE8A3] text-xs font-serif font-bold flex items-center gap-2 backdrop-blur-md transition-all shadow-md hover:scale-[1.02]"
             >
-              <Sliders className="w-4 h-4 text-[#D4AF37]" />
+              <Sliders className="w-4 h-4 text-[#FFE59E]" />
               <span>Category Master</span>
             </Link>
             <button
               onClick={openCreateModal}
-              className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#FFF6D6] via-[#FFE59E] to-[#D4AF37] text-[#200414] text-xs font-serif font-black uppercase tracking-wider flex items-center gap-2 shadow-[0_4px_20px_rgba(212,175,55,0.35)] hover:shadow-[0_6px_25px_rgba(212,175,55,0.5)] hover:scale-[1.03] transition-all cursor-pointer border border-[#FFFDF9]"
+              className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#FFF6D6] via-[#FFE59E] to-[#D4AF37] text-[#450035] text-xs font-serif font-black uppercase tracking-wider flex items-center gap-2 shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_25px_rgba(212,175,55,0.6)] hover:scale-[1.03] transition-all cursor-pointer border border-[#FFFDF9]"
             >
-              <Plus className="w-4 h-4 text-[#200414] stroke-[3]" />
+              <Plus className="w-4 h-4 text-[#450035] stroke-[3]" />
               <span>New Stitching Order</span>
             </button>
           </div>
@@ -517,7 +541,7 @@ function DispatchContent() {
           onClick={() => setStatusFilter('active')}
           className={`cursor-pointer rounded-2xl p-5 border transition-all duration-200 relative overflow-hidden group shadow-sm ${
             statusFilter === 'active'
-              ? 'bg-gradient-to-br from-[#280619] to-[#3D0A26] text-white border-[#D4AF37] ring-2 ring-[#D4AF37]'
+              ? 'bg-gradient-to-br from-[#54013F] via-[#760159] to-[#3B012C] text-white border-[#D4AF37] ring-2 ring-[#D4AF37]'
               : 'bg-white hover:bg-[#FFFDF9] border-[#E8DCC8] hover:border-[#D4AF37] text-[#280619]'
           }`}
         >
@@ -564,7 +588,7 @@ function DispatchContent() {
           onClick={() => setStatusFilter('ready')}
           className={`cursor-pointer rounded-2xl p-5 border transition-all duration-200 relative overflow-hidden group shadow-sm ${
             statusFilter === 'ready'
-              ? 'bg-gradient-to-br from-[#280619] to-[#3D0A26] text-white border-[#D4AF37] ring-2 ring-[#D4AF37]'
+              ? 'bg-gradient-to-br from-amber-900 via-[#760159] to-[#3B012C] text-white border-[#D4AF37] ring-2 ring-[#D4AF37]'
               : 'bg-white hover:bg-[#FFFDF9] border-[#E8DCC8] hover:border-[#D4AF37] text-[#280619]'
           }`}
         >
@@ -609,7 +633,7 @@ function DispatchContent() {
           onClick={() => setPriorityFilter(priorityFilter === 'Urgent Wedding VIP' ? 'all' : 'Urgent Wedding VIP')}
           className={`cursor-pointer rounded-2xl p-5 border transition-all duration-200 relative overflow-hidden group shadow-sm ${
             priorityFilter === 'Urgent Wedding VIP'
-              ? 'bg-gradient-to-br from-rose-950 to-[#3D0A26] text-white border-rose-400 ring-2 ring-rose-400'
+              ? 'bg-gradient-to-br from-rose-950 via-[#760159] to-[#3B012C] text-white border-rose-400 ring-2 ring-rose-400'
               : 'bg-white hover:bg-rose-50/40 border-[#E8DCC8] hover:border-rose-300 text-[#280619]'
           }`}
         >
@@ -704,7 +728,7 @@ function DispatchContent() {
               onClick={() => setStatusFilter('all')}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-serif font-bold transition-all ${
                 statusFilter === 'all'
-                  ? 'bg-[#200414] text-[#FFE8A3] shadow-xs'
+                  ? 'bg-gradient-to-r from-[#760159] to-[#9E0277] text-[#FFE8A3] shadow-md border border-[#D4AF37]/50'
                   : 'bg-[#FAF8F5] text-[#6B4B35] hover:bg-[#FAF0DD] border border-[#E8DCC8]'
               }`}
             >
@@ -714,7 +738,7 @@ function DispatchContent() {
               onClick={() => setStatusFilter('active')}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-serif font-bold transition-all ${
                 statusFilter === 'active'
-                  ? 'bg-[#200414] text-[#FFE8A3] shadow-xs'
+                  ? 'bg-gradient-to-r from-[#760159] to-[#9E0277] text-[#FFE8A3] shadow-md border border-[#D4AF37]/50'
                   : 'bg-[#FAF8F5] text-[#6B4B35] hover:bg-[#FAF0DD] border border-[#E8DCC8]'
               }`}
             >
@@ -724,7 +748,7 @@ function DispatchContent() {
               onClick={() => setStatusFilter('ready')}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-serif font-bold transition-all ${
                 statusFilter === 'ready'
-                  ? 'bg-amber-900 text-[#FFE8A3] shadow-xs'
+                  ? 'bg-gradient-to-r from-amber-800 to-[#760159] text-[#FFE8A3] shadow-md border border-[#D4AF37]/50'
                   : 'bg-[#FAF8F5] text-[#6B4B35] hover:bg-[#FAF0DD] border border-[#E8DCC8]'
               }`}
             >
@@ -865,7 +889,7 @@ function DispatchContent() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs min-w-[1280px]">
             <thead>
-              <tr className="bg-gradient-to-r from-[#200414] via-[#2F061E] to-[#200414] text-[#FFE8A3] border-b-2 border-[#D4AF37] font-serif uppercase tracking-[0.12em] text-[10.5px]">
+              <tr className="bg-gradient-to-r from-[#54013F] via-[#760159] to-[#54013F] text-[#FFE8A3] border-b-2 border-[#D4AF37] font-serif uppercase tracking-[0.14em] text-[11px] shadow-sm">
                 <th className="py-4 px-5 font-bold w-[160px]">
                   <div className="flex items-center gap-1.5">
                     <span>Job # / Date</span>
@@ -925,29 +949,29 @@ function DispatchContent() {
                   <tr
                     key={order._id}
                     className={`transition-all duration-150 ${priorityBorder} ${
-                      idx % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F5]/50'
+                      idx % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F5]/60'
                     } ${
                       isSelected
-                        ? 'bg-[#FFF6D6]/50 ring-2 ring-[#D4AF37]'
+                        ? 'bg-[#FFF6D6]/60 ring-2 ring-[#D4AF37]'
                         : 'hover:bg-[#FFF9EE] hover:shadow-xs'
                     }`}
                   >
                     {/* Column 1: Job # & Date */}
                     <td className="py-4 px-5 align-top">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-mono font-black text-xs text-[#200414] bg-[#FAF0DD] px-2.5 py-1 rounded-lg border border-[#D4AF37]/60 shadow-2xs">
+                        <span className="font-mono font-black text-xs text-[#760159] bg-[#FAF0DD] px-2.5 py-1 rounded-lg border border-[#D4AF37]/80 shadow-2xs">
                           {order.stitchingOrderNumber}
                         </span>
                         <button
                           onClick={() => copyToClipboard(order.stitchingOrderNumber, 'Job #')}
-                          className="text-zinc-400 hover:text-[#8C5818] p-1 rounded transition-colors"
+                          className="text-zinc-400 hover:text-[#760159] p-1 rounded transition-colors"
                           title="Copy Job #"
                         >
                           <Copy className="w-3 h-3" />
                         </button>
                       </div>
 
-                      <div className="flex items-center gap-1.5 text-[11px] text-[#8C5818] mt-2">
+                      <div className="flex items-center gap-1.5 text-[11px] text-[#8C5818] mt-2 font-medium">
                         <Calendar className="w-3 h-3 text-[#D4AF37]" />
                         <span>Booked: {order.date}</span>
                       </div>
@@ -959,7 +983,7 @@ function DispatchContent() {
                     <td className="py-4 px-5 align-top">
                       <div className="flex items-start gap-3">
                         {/* Monogram Avatar */}
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#200414] to-[#450A2C] text-[#FFE8A3] border-2 border-[#D4AF37]/60 flex items-center justify-center font-serif font-black text-xs shadow-xs shrink-0 mt-0.5">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#760159] via-[#9E0277] to-[#54013F] text-[#FFE8A3] border-2 border-[#D4AF37] flex items-center justify-center font-serif font-black text-xs shadow-sm shrink-0 mt-0.5">
                           {getInitials(order.customerName)}
                         </div>
 
@@ -1002,11 +1026,11 @@ function DispatchContent() {
                         <Link
                           href={`/stitching/categories`}
                           title="Open Category Master to inspect standard turnaround & templates"
-                          className="inline-flex items-center gap-1.5 font-serif font-bold text-xs text-[#200414] hover:text-[#8C5818] bg-[#FAF0DD] px-3 py-1 rounded-full border border-[#D4AF37]/60 group transition-all shadow-2xs"
+                          className="inline-flex items-center gap-1.5 font-serif font-bold text-xs text-[#760159] hover:text-[#54013F] bg-[#FAF0DD] hover:bg-[#FFE59E] px-3 py-1 rounded-full border border-[#D4AF37]/70 group transition-all shadow-2xs"
                         >
-                          <Scissors className="w-3 h-3 text-[#8C5818]" />
+                          <Scissors className="w-3 h-3 text-[#760159]" />
                           <span>{order.categoryName}</span>
-                          <ArrowUpRight className="w-3 h-3 text-[#8C5818] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                          <ArrowUpRight className="w-3 h-3 text-[#760159] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                         </Link>
 
                         <div className="text-[10.5px] text-[#6B4B35]">
@@ -1026,17 +1050,17 @@ function DispatchContent() {
                       {order.measurementCode || order.measurementId ? (
                         <Link
                           href={`/stitching/measurements?id=${order.measurementId || order.measurementCode}`}
-                          className="block p-3 rounded-2xl bg-gradient-to-br from-[#FFFDF9] to-[#FAF0DD]/80 border-2 border-[#D4AF37]/70 hover:border-[#200414] hover:shadow-md transition-all group"
+                          className="block p-3 rounded-2xl bg-gradient-to-br from-[#FFFDF9] via-[#FAF3E5] to-[#FAF0DD] border-2 border-[#D4AF37]/80 hover:border-[#760159] hover:shadow-[0_8px_20px_rgba(118,1,89,0.18)] transition-all group relative overflow-hidden"
                           title="Click to view customer's exact measurement values on Measurements page"
                         >
                           <div className="flex items-center justify-between">
-                            <span className="font-mono font-bold text-xs text-[#8C5818] group-hover:text-[#200414] flex items-center gap-1.5">
+                            <span className="font-mono font-bold text-xs text-[#760159] group-hover:text-[#54013F] flex items-center gap-1.5">
                               <Ruler className="w-3.5 h-3.5 text-[#D4AF37]" />
                               <span>{order.measurementCode || 'Inspect Card'}</span>
                             </span>
-                            <span className="text-[10px] font-bold text-[#8C5818] group-hover:text-[#200414] flex items-center gap-0.5">
+                            <span className="text-[10px] font-bold text-[#760159] group-hover:text-[#54013F] flex items-center gap-1 bg-[#FFFDF9] px-2 py-0.5 rounded-full border border-[#D4AF37]/50 shadow-2xs">
                               <span>Open</span>
-                              <ArrowRight className="w-3 h-3 text-[#D4AF37] group-hover:translate-x-1 transition-transform" />
+                              <ArrowRight className="w-3 h-3 text-[#760159] group-hover:translate-x-1 transition-transform" />
                             </span>
                           </div>
 
@@ -1048,9 +1072,9 @@ function DispatchContent() {
                             <p className="text-[10px] text-[#6B4B35] mt-1 font-medium">Custom fitted specs</p>
                           )}
 
-                          <div className="mt-1.5 pt-1.5 border-t border-[#D4AF37]/30 flex items-center justify-between text-[9px] text-[#8C5818] font-semibold">
+                          <div className="mt-1.5 pt-1.5 border-t border-[#D4AF37]/30 flex items-center justify-between text-[9px] text-[#760159] font-semibold">
                             <span>Tailor Workshop Record</span>
-                            <span className="underline">View Sheet ➔</span>
+                            <span className="underline group-hover:text-[#54013F]">View Sheet ➔</span>
                           </div>
                         </Link>
                       ) : (
@@ -1058,7 +1082,7 @@ function DispatchContent() {
                           <span className="text-[11px] text-zinc-500 font-medium block">No measurement linked</span>
                           <Link
                             href={`/stitching/measurements`}
-                            className="inline-flex items-center gap-1 text-[10.5px] text-[#8C5818] font-bold hover:underline mt-1"
+                            className="inline-flex items-center gap-1 text-[10.5px] text-[#760159] font-bold hover:underline mt-1"
                           >
                             <Plus className="w-3 h-3" />
                             <span>Link Measurement</span>
@@ -1207,10 +1231,10 @@ function DispatchContent() {
       {viewingOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
           <div className="bg-[#FFFDF9] rounded-3xl border-2 border-[#D4AF37] max-w-2xl w-full my-8 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-6 bg-gradient-to-r from-[#200414] to-[#3D0A26] text-[#FFFDF9] flex items-center justify-between border-b-2 border-[#D4AF37]">
+            <div className="p-6 bg-gradient-to-r from-[#54013F] via-[#760159] to-[#450035] text-[#FFFDF9] flex items-center justify-between border-b-2 border-[#D4AF37]">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold bg-[#FFE59E] text-[#200414] px-2.5 py-0.5 rounded-md">
+                  <span className="text-xs font-mono font-bold bg-[#FFE59E] text-[#54013F] px-2.5 py-0.5 rounded-md">
                     {viewingOrder.stitchingOrderNumber}
                   </span>
                   <span className="text-xs text-[#FFE59E]/80">Booked on {viewingOrder.date}</span>
@@ -1427,7 +1451,7 @@ function DispatchContent() {
       {isFormModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
           <div className="bg-[#FFFDF9] rounded-3xl border-2 border-[#D4AF37] max-w-3xl w-full my-8 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-6 bg-gradient-to-r from-[#200414] to-[#3D0A26] text-[#FFFDF9] flex items-center justify-between border-b-2 border-[#D4AF37]">
+            <div className="p-6 bg-gradient-to-r from-[#54013F] via-[#760159] to-[#450035] text-[#FFFDF9] flex items-center justify-between border-b-2 border-[#D4AF37]">
               <div>
                 <span className="text-[10px] font-serif font-bold uppercase tracking-widest text-[#FFE8A3]">
                   Haute Couture Atelier

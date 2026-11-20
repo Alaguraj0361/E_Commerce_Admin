@@ -69,7 +69,7 @@ export default function AdminLoginPage() {
                 NALMARA FASHION{' '}
                 <span className="text-[#681145] font-mono text-sm font-bold">ADMIN</span>
               </h1>
-              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#380725] border border-[#D4AF37] text-[#FFE59E] text-[10px] font-bold tracking-wider uppercase font-mono mt-2 shadow-2xs">
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#760159] border border-[#D4AF37] text-[#FFE59E] text-[10px] font-bold tracking-wider uppercase font-mono mt-2 shadow-2xs">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#FFE59E]" />
                 Operations Command Center
               </div>

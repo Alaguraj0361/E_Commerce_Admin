@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import {
   Package,
   Search,
@@ -21,6 +22,7 @@ import {
   AlertCircle,
   Loader2,
   Printer,
+  Scissors,
 } from 'lucide-react';
 import { api } from '../../lib/api';
 import { formatCurrency, formatDate } from '../../lib/utils';
@@ -290,6 +292,21 @@ export default function AdminOrdersPage() {
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
           </button>
         </div>
+      </div>
+
+      {/* Order Type Navigation: Ready-to-Wear vs Bespoke Stitching Atelier */}
+      <div className="flex flex-wrap items-center gap-3 border-b border-[#EAE1D1] pb-3">
+        <span className="px-4 py-2 rounded-xl text-xs font-bold bg-[#760159] text-[#FFE59E] border border-[#760159] flex items-center gap-2 shadow-xs">
+          <Package className="w-3.5 h-3.5 text-[#FFE59E]" />
+          <span>Ready-to-Wear Orders ({orders.length})</span>
+        </span>
+        <Link
+          href="/stitching/dispatch"
+          className="px-4 py-2 rounded-xl text-xs font-bold bg-[#FAF8F5] text-[#54013F] hover:bg-[#F3EBF0] border border-[#EAE1D1] hover:border-[#760159]/40 flex items-center gap-2 transition-all shadow-xs"
+        >
+          <Scissors className="w-3.5 h-3.5 text-[#760159]" />
+          <span>Bespoke Stitching Atelier Orders →</span>
+        </Link>
       </div>
 
       {/* Filter and Tabs */}

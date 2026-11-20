@@ -56,7 +56,16 @@ function MeasurementsContent() {
     addMeasurement,
     updateMeasurement,
     deleteMeasurement,
+    fetchMeasurements,
+    fetchCategories,
+    isLoading,
   } = useStitchingStore();
+
+  // Load live measurements on mount
+  useEffect(() => {
+    fetchMeasurements();
+    fetchCategories();
+  }, [fetchMeasurements, fetchCategories]);
 
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState(initialCategory);
@@ -188,7 +197,7 @@ function MeasurementsContent() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customerName.trim() || !customerPhone.trim() || !categorySlug) {
       toast.error('Please enter customer name, phone number, and select a category');
@@ -199,7 +208,7 @@ function MeasurementsContent() {
     const categoryName = cat?.name || categorySlug;
 
     if (editingMeasurement) {
-      updateMeasurement(editingMeasurement._id, {
+      await updateMeasurement(editingMeasurement._id, {
         date,
         customerName: customerName.trim(),
         customerPhone: customerPhone.trim(),
@@ -214,7 +223,7 @@ function MeasurementsContent() {
       });
       toast.success(`Measurement record ${editingMeasurement.measurementCode} updated!`);
     } else {
-      const created = addMeasurement({
+      const created = await addMeasurement({
         date,
         customerName: customerName.trim(),
         customerPhone: customerPhone.trim(),
@@ -227,7 +236,7 @@ function MeasurementsContent() {
         fitPreference,
         unit,
       });
-      toast.success(`New measurement record ${created.measurementCode} saved successfully!`);
+      toast.success(`New measurement record ${created?.measurementCode || 'Record'} saved successfully!`);
     }
 
     setIsFormModalOpen(false);
@@ -243,44 +252,56 @@ function MeasurementsContent() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-7 max-w-[1680px] mx-auto min-h-screen text-[#2A0E1B]">
       {/* Top Haute Couture Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#200414] via-[#350723] to-[#200414] p-6 sm:p-8 text-[#FFFDF9] border border-[#D4AF37]/50 shadow-xl">
-        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-[#D4AF37]/15 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-[#D4AF37]/10 blur-3xl pointer-events-none" />
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#54013F] via-[#760159] to-[#450035] p-6 sm:p-8 text-[#FFFDF9] border-2 border-[#D4AF37]/70 shadow-2xl">
+        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-[#FFE59E]/15 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-[#D4AF37]/15 blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#FFE59E] text-xs font-serif font-bold tracking-widest uppercase">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/25 border border-[#FFE59E]/50 text-[#FFE59E] text-xs font-serif font-bold tracking-widest uppercase backdrop-blur-md">
               <Ruler className="w-3.5 h-3.5 text-[#FFE59E]" />
               <span>Nalmara Bespoke Tailoring Vault</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-serif font-bold tracking-tight text-white flex items-center gap-3">
+            <h1 className="text-2xl sm:text-4xl font-serif font-bold tracking-tight text-white flex items-center gap-3 drop-shadow-md">
               Customer Measurements Archive
             </h1>
-            <p className="text-xs sm:text-sm text-[#FFE59E]/80 max-w-2xl font-light leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#FFE59E]/90 max-w-2xl font-light leading-relaxed">
               Store, inspect, and link bespoke client body measurements with category-specific tailoring templates for precision fitting.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                fetchMeasurements();
+                fetchCategories();
+                toast.success('Customer measurements refreshed from database');
+              }}
+              className="px-4 py-2.5 rounded-2xl bg-[#54013F]/60 hover:bg-[#760159] border border-[#FFE59E]/60 text-[#FFE8A3] text-xs font-serif font-bold flex items-center gap-2 backdrop-blur-md transition-all shadow-md hover:scale-[1.02] cursor-pointer"
+            >
+              <RotateCcw className={`w-4 h-4 text-[#FFE59E] ${isLoading ? 'animate-spin' : ''}`} />
+              <span>Refresh</span>
+            </button>
             <Link
               href="/stitching/dispatch"
-              className="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-[#D4AF37]/60 text-[#FFE8A3] text-xs font-serif font-bold flex items-center gap-2 backdrop-blur-md transition-all shadow-sm hover:scale-[1.02]"
+              className="px-4 py-2.5 rounded-2xl bg-[#54013F]/60 hover:bg-[#760159] border border-[#FFE59E]/60 text-[#FFE8A3] text-xs font-serif font-bold flex items-center gap-2 backdrop-blur-md transition-all shadow-md hover:scale-[1.02]"
             >
-              <Package className="w-4 h-4 text-[#D4AF37]" />
+              <Package className="w-4 h-4 text-[#FFE59E]" />
               <span>Stitching Dispatch Details</span>
             </Link>
             <Link
               href="/stitching/categories"
-              className="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-[#D4AF37]/60 text-[#FFE8A3] text-xs font-serif font-bold flex items-center gap-2 backdrop-blur-md transition-all shadow-sm hover:scale-[1.02]"
+              className="px-4 py-2.5 rounded-2xl bg-[#54013F]/60 hover:bg-[#760159] border border-[#FFE59E]/60 text-[#FFE8A3] text-xs font-serif font-bold flex items-center gap-2 backdrop-blur-md transition-all shadow-md hover:scale-[1.02]"
             >
-              <Sliders className="w-4 h-4 text-[#D4AF37]" />
+              <Sliders className="w-4 h-4 text-[#FFE59E]" />
               <span>Category Master</span>
             </Link>
             <button
               onClick={openCreateModal}
-              className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#FFF6D6] via-[#FFE59E] to-[#D4AF37] text-[#200414] text-xs font-serif font-black uppercase tracking-wider flex items-center gap-2 shadow-[0_4px_20px_rgba(212,175,55,0.35)] hover:shadow-[0_6px_25px_rgba(212,175,55,0.5)] hover:scale-[1.03] transition-all cursor-pointer border border-[#FFFDF9]"
+              className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#FFF6D6] via-[#FFE59E] to-[#D4AF37] text-[#450035] text-xs font-serif font-black uppercase tracking-wider flex items-center gap-2 shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_25px_rgba(212,175,55,0.6)] hover:scale-[1.03] transition-all cursor-pointer border border-[#FFFDF9]"
             >
-              <Plus className="w-4 h-4 text-[#200414] stroke-[3]" />
+              <Plus className="w-4 h-4 text-[#450035] stroke-[3]" />
               <span>Record New Measurement</span>
             </button>
           </div>
@@ -430,7 +451,7 @@ function MeasurementsContent() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs min-w-[1240px]">
             <thead>
-              <tr className="bg-gradient-to-r from-[#200414] via-[#2F061E] to-[#200414] text-[#FFE8A3] border-b-2 border-[#D4AF37] font-serif uppercase tracking-[0.12em] text-[10.5px]">
+              <tr className="bg-gradient-to-r from-[#54013F] via-[#760159] to-[#54013F] text-[#FFE8A3] border-b-2 border-[#D4AF37] font-serif uppercase tracking-[0.14em] text-[11px] shadow-sm">
                 <th className="py-4 px-5 font-bold w-[160px]">Code / Date</th>
                 <th className="py-4 px-5 font-bold w-[250px]">Customer Details</th>
                 <th className="py-4 px-5 font-bold w-[200px]">Garment Category</th>
@@ -446,29 +467,29 @@ function MeasurementsContent() {
                   <tr
                     key={m._id}
                     className={`transition-all duration-150 ${
-                      idx % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F5]/50'
+                      idx % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F5]/60'
                     } ${
                       isSelected
-                        ? 'bg-[#FFF6D6]/50 ring-2 ring-[#D4AF37]'
+                        ? 'bg-[#FFF6D6]/60 ring-2 ring-[#D4AF37]'
                         : 'hover:bg-[#FFF9EE] hover:shadow-xs'
                     }`}
                   >
                     {/* Code & Date */}
                     <td className="py-4 px-5 align-top">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-mono font-black text-xs text-[#200414] bg-[#FAF0DD] px-2.5 py-1 rounded-lg border border-[#D4AF37]/60 shadow-2xs">
+                        <span className="font-mono font-black text-xs text-[#760159] bg-[#FAF0DD] px-2.5 py-1 rounded-lg border border-[#D4AF37]/80 shadow-2xs">
                           {m.measurementCode}
                         </span>
                         <button
                           onClick={() => copyToClipboard(m.measurementCode, 'Measurement Code')}
-                          className="text-zinc-400 hover:text-[#8C5818] p-1 rounded transition-colors"
+                          className="text-zinc-400 hover:text-[#760159] p-1 rounded transition-colors"
                           title="Copy Code"
                         >
                           <Copy className="w-3 h-3" />
                         </button>
                       </div>
 
-                      <div className="flex items-center gap-1.5 text-[11px] text-[#8C5818] mt-2">
+                      <div className="flex items-center gap-1.5 text-[11px] text-[#8C5818] mt-2 font-medium">
                         <Calendar className="w-3 h-3 text-[#D4AF37]" />
                         <span>{m.date}</span>
                       </div>
@@ -477,7 +498,7 @@ function MeasurementsContent() {
                     {/* Customer Info */}
                     <td className="py-4 px-5 align-top">
                       <div className="flex items-start gap-3">
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#200414] to-[#450A2C] text-[#FFE8A3] border-2 border-[#D4AF37]/60 flex items-center justify-center font-serif font-black text-xs shadow-xs shrink-0 mt-0.5">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#760159] via-[#9E0277] to-[#54013F] text-[#FFE8A3] border-2 border-[#D4AF37] flex items-center justify-center font-serif font-black text-xs shadow-sm shrink-0 mt-0.5">
                           {getInitials(m.customerName)}
                         </div>
 
@@ -628,10 +649,10 @@ function MeasurementsContent() {
       {viewingMeasurement && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
           <div className="bg-[#FFFDF9] rounded-3xl border-2 border-[#D4AF37] max-w-xl w-full my-8 shadow-2xl overflow-hidden flex flex-col">
-            <div className="p-6 bg-gradient-to-r from-[#200414] to-[#3D0A26] text-[#FFFDF9] flex items-center justify-between border-b-2 border-[#D4AF37]">
+            <div className="p-6 bg-gradient-to-r from-[#54013F] via-[#760159] to-[#450035] text-[#FFFDF9] flex items-center justify-between border-b-2 border-[#D4AF37]">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold bg-[#FFE59E] text-[#200414] px-2.5 py-0.5 rounded-md">
+                  <span className="text-xs font-mono font-bold bg-[#FFE59E] text-[#54013F] px-2.5 py-0.5 rounded-md">
                     {viewingMeasurement.measurementCode}
                   </span>
                   <span className="text-xs text-[#FFE59E]/80">Recorded on {viewingMeasurement.date}</span>
@@ -785,7 +806,7 @@ function MeasurementsContent() {
       {isFormModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
           <div className="bg-[#FFFDF9] rounded-3xl border-2 border-[#D4AF37] max-w-3xl w-full my-8 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-6 bg-gradient-to-r from-[#200414] to-[#3D0A26] text-[#FFFDF9] flex items-center justify-between border-b-2 border-[#D4AF37]">
+            <div className="p-6 bg-gradient-to-r from-[#54013F] via-[#760159] to-[#450035] text-[#FFFDF9] flex items-center justify-between border-b-2 border-[#D4AF37]">
               <div>
                 <span className="text-[10px] font-serif font-bold uppercase tracking-widest text-[#FFE8A3]">
                   Haute Couture Atelier

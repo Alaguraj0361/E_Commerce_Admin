@@ -58,7 +58,7 @@ export const AdminSidebar = ({ isOpen = false, onClose }: AdminSidebarProps) => 
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] bg-gradient-to-b from-[#280619] via-[#340721] to-[#220415] border-r-2 border-[#D4AF37]/80 flex flex-col justify-between h-screen transition-transform duration-300 ease-in-out shadow-2xl lg:static lg:w-64 lg:h-screen lg:sticky lg:top-0 lg:flex-shrink-0 ${
+      className={`fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] bg-gradient-to-b from-[#4A0037] via-[#65014C] to-[#2E0022] border-r-2 border-[#D4AF37]/80 flex flex-col justify-between h-screen transition-transform duration-300 ease-in-out shadow-2xl lg:static lg:w-64 lg:h-screen lg:sticky lg:top-0 lg:flex-shrink-0 ${
         isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}
     >
@@ -82,7 +82,7 @@ export const AdminSidebar = ({ isOpen = false, onClose }: AdminSidebarProps) => 
                 <span className="text-sm font-black uppercase tracking-wider text-[#FFFDF9] font-serif truncate">
                   NALMARA
                 </span>
-                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-gradient-to-r from-[#FFF6D6] to-[#D4AF37] text-[#280619] font-mono tracking-wider">
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-gradient-to-r from-[#FFF6D6] to-[#D4AF37] text-[#4A0037] font-mono tracking-wider">
                   ROYAL
                 </span>
               </div>
@@ -94,7 +94,7 @@ export const AdminSidebar = ({ isOpen = false, onClose }: AdminSidebarProps) => 
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-[#FFE59E] hover:bg-[#380725] lg:hidden transition-colors"
+            className="p-2 rounded-xl text-[#FFE59E] hover:bg-[#760159]/60 lg:hidden transition-colors"
             title="Close navigation menu"
             aria-label="Close navigation"
           >
@@ -114,20 +114,20 @@ export const AdminSidebar = ({ isOpen = false, onClose }: AdminSidebarProps) => 
                 onClick={handleLinkClick}
                 className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium transition-all ${
                   isActive
-                    ? 'bg-gradient-to-r from-[#FFF6D6] via-[#FFE59E] to-[#D4AF37] text-[#280619] font-bold shadow-[0_6px_16px_rgba(212,175,55,0.28)] border border-[#FFFDF9]'
-                    : 'text-[#FAF0DD]/80 hover:text-[#FFE59E] hover:bg-[#380725]/80 border border-transparent hover:border-[#D4AF37]/40'
+                    ? 'bg-gradient-to-r from-[#FFF6D6] via-[#FFE59E] to-[#D4AF37] text-[#4A0037] font-bold shadow-[0_6px_16px_rgba(212,175,55,0.35)] border border-[#FFFDF9]'
+                    : 'text-[#FAF0DD]/85 hover:text-[#FFE59E] hover:bg-[#760159]/50 border border-transparent hover:border-[#D4AF37]/40'
                 }`}
               >
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-3">
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-[#280619]' : 'text-[#D4AF37]'}`} />
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-[#4A0037]' : 'text-[#D4AF37]'}`} />
                     <span>{item.name}</span>
                   </div>
                   {(item as any).badge && (
                     <span
                       className={`text-[9px] font-bold px-1.5 py-0.5 rounded font-mono ${
                         isActive
-                          ? 'bg-[#280619] text-[#FFE59E]'
+                          ? 'bg-[#4A0037] text-[#FFE59E]'
                           : 'bg-[#FFE59E]/20 text-[#FFE59E] border border-[#D4AF37]/40'
                       }`}
                     >
@@ -142,17 +142,17 @@ export const AdminSidebar = ({ isOpen = false, onClose }: AdminSidebarProps) => 
       </div>
 
       {/* Footer Area */}
-      <div className="p-5 border-t border-[#D4AF37]/35 space-y-4 bg-[#1E0312]/80">
+      <div className="p-5 border-t border-[#D4AF37]/35 space-y-4 bg-[#2E0022]/90">
         <a
           href={storefrontUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-[#380725] hover:bg-[#4E0B34] border border-[#D4AF37]/70 text-[11px] font-semibold text-[#FFE59E] transition-colors shadow-xs"
+          className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-[#760159] hover:bg-[#8E016B] border border-[#D4AF37]/70 text-[11px] font-semibold text-[#FFE59E] transition-colors shadow-xs"
         >
           <span className="flex items-center gap-2">
-            <ExternalLink className="w-3.5 h-3.5 text-[#D4AF37]" /> Live Storefront
+            <ExternalLink className="w-3.5 h-3.5 text-[#FFE59E]" /> Live Storefront
           </span>
-          <span className="text-[9.5px] bg-[#220415] text-[#FFE59E] px-1.5 py-0.5 rounded font-mono border border-[#D4AF37]/40">
+          <span className="text-[9.5px] bg-[#3B002B] text-[#FFE59E] px-1.5 py-0.5 rounded font-mono border border-[#D4AF37]/40">
             OPEN
           </span>
         </a>
@@ -160,7 +160,7 @@ export const AdminSidebar = ({ isOpen = false, onClose }: AdminSidebarProps) => 
         {user && (
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-b from-[#FFE59E] to-[#D4AF37] text-[#280619] flex items-center justify-center font-bold text-xs flex-shrink-0 border border-[#FFFDF9] shadow-xs">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-b from-[#FFE59E] to-[#D4AF37] text-[#4A0037] flex items-center justify-center font-bold text-xs flex-shrink-0 border border-[#FFFDF9] shadow-xs">
                 {user.firstName?.[0] || 'A'}
               </div>
               <div className="min-w-0">

@@ -13,7 +13,7 @@
   }
 
   body {
-    @apply bg-[#FDF6EC] text-[#23120B] antialiased selection:bg-[#380725] selection:text-[#FFE59E];
+    @apply bg-[#FDF6EC] text-[#23120B] antialiased selection:bg-[#760159] selection:text-[#FFE59E];
     background-image:
       radial-gradient(circle at 15% 10%, rgba(212, 175, 55, 0.08) 0%, transparent 45%),
       radial-gradient(circle at 85% 40%, rgba(91, 14, 61, 0.04) 0%, transparent 50%);
