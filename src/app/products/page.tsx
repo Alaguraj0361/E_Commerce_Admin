@@ -24,6 +24,7 @@ import { formatCurrency } from '../../lib/utils';
 import { Product, Category, ProductVariant, ProductImage } from '../../types';
 import { toast } from 'sonner';
 import { MultiImageUpload } from '@/components/ui/ImageUpload';
+import { PremiumLoader } from '@/components/ui/PremiumLoader';
 
 const slugify = (text: string): string => {
   return text
@@ -475,10 +476,20 @@ export default function AdminProductsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#EAE1D1]">
-              {filteredProducts.length === 0 ? (
+              {isLoading ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-[#8C7E72]">
-                    {isLoading ? 'Loading catalog products...' : 'No products found matching criteria.'}
+                  <td colSpan={7} className="py-8">
+                    <PremiumLoader
+                      title="Loading Products Catalog..."
+                      subtitle="Retrieving inventory items, pure silk sarees, sizes, pricing and gallery images..."
+                      compact
+                    />
+                  </td>
+                </tr>
+              ) : filteredProducts.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-16 text-center text-[#8C7E72] font-serif">
+                    No products found matching criteria.
                   </td>
                 </tr>
               ) : (

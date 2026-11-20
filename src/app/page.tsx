@@ -19,6 +19,7 @@ import {
 import { api } from '../lib/api';
 import { formatCurrency, formatDate } from '../lib/utils';
 import { ShippingLabelModal } from '../components/ui/ShippingLabelModal';
+import { PremiumLoader } from '../components/ui/PremiumLoader';
 
 export default function AdminDashboardPage() {
   const [analytics, setAnalytics] = useState<any>(null);
@@ -46,8 +47,11 @@ export default function AdminDashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-[50vh] flex items-center justify-center text-zinc-500 text-xs">
-        Loading operations metrics...
+      <div className="min-h-[70vh] flex items-center justify-center p-6">
+        <PremiumLoader
+          title="Loading Executive Operations Dashboard..."
+          subtitle="Compiling real-time revenue analytics, order pipelines, stock thresholds and sales performance..."
+        />
       </div>
     );
   }

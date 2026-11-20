@@ -19,6 +19,7 @@ import { api } from '../../lib/api';
 import { formatCurrency, formatDate } from '../../lib/utils';
 import { Coupon } from '../../types';
 import { toast } from 'sonner';
+import { PremiumLoader } from '../../components/ui/PremiumLoader';
 
 export default function AdminCouponsPage() {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
@@ -193,10 +194,20 @@ export default function AdminCouponsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#EAE1D1]">
-              {filteredCoupons.length === 0 ? (
+              {isLoading ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-[#8C7E72]">
-                    {isLoading ? 'Loading promotional vouchers...' : 'No promotional coupons found.'}
+                  <td colSpan={7} className="py-8">
+                    <PremiumLoader
+                      title="Loading Promotional Vouchers..."
+                      subtitle="Fetching discount codes, usage limits, and redemption criteria..."
+                      compact
+                    />
+                  </td>
+                </tr>
+              ) : filteredCoupons.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-16 text-center text-[#8C7E72] font-serif">
+                    No promotional coupons found.
                   </td>
                 </tr>
               ) : (

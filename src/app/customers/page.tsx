@@ -15,6 +15,7 @@ import { api } from '../../lib/api';
 import { formatDate } from '../../lib/utils';
 import { User } from '../../types';
 import { toast } from 'sonner';
+import { PremiumLoader } from '../../components/ui/PremiumLoader';
 
 export default function AdminCustomersPage() {
   const [customers, setCustomers] = useState<User[]>([]);
@@ -116,10 +117,20 @@ export default function AdminCustomersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#EAE1D1]">
-              {filteredCustomers.length === 0 ? (
+              {isLoading ? (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center text-[#8C7E72]">
-                    {isLoading ? 'Loading customer records...' : 'No customers found.'}
+                  <td colSpan={5} className="py-8">
+                    <PremiumLoader
+                      title="Loading Customer Accounts..."
+                      subtitle="Retrieving client profiles, email contacts, and registration history..."
+                      compact
+                    />
+                  </td>
+                </tr>
+              ) : filteredCustomers.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="py-16 text-center text-[#8C7E72] font-serif">
+                    No customers found matching search criteria.
                   </td>
                 </tr>
               ) : (

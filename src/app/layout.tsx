@@ -10,6 +10,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_ADMIN_URL || 'https://admin-nalmarafashion.vercel.app'
+  ),
   title: 'NALMARA FASHION Admin | Operations Command Center',
   description: 'Executive Management Console for products, orders, coupons, and analytics.',
   icons: {

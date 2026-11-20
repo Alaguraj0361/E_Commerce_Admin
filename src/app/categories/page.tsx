@@ -17,6 +17,7 @@ import { api } from '../../lib/api';
 import { Category } from '../../types';
 import { toast } from 'sonner';
 import { SingleImageUpload } from '@/components/ui/ImageUpload';
+import { PremiumLoader } from '@/components/ui/PremiumLoader';
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -192,9 +193,17 @@ export default function AdminCategoriesPage() {
 
       {/* Categories Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {filteredCategories.length === 0 ? (
-          <div className="col-span-full py-12 text-center text-[#8C7E72] text-xs bg-white border border-[#EAE1D1] rounded-2xl">
-            {isLoading ? 'Loading categories...' : 'No categories found.'}
+        {isLoading ? (
+          <div className="col-span-full py-8 bg-white border border-[#EAE1D1] rounded-2xl">
+            <PremiumLoader
+              title="Loading Store Categories..."
+              subtitle="Fetching catalog taxonomy, parent categories, and image assets..."
+              compact
+            />
+          </div>
+        ) : filteredCategories.length === 0 ? (
+          <div className="col-span-full py-16 text-center text-[#8C7E72] font-serif text-xs bg-white border border-[#EAE1D1] rounded-2xl">
+            No categories found matching criteria.
           </div>
         ) : (
           filteredCategories.map((cat) => (

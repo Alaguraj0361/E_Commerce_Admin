@@ -17,6 +17,7 @@ import { api } from '../../lib/api';
 import { formatDate } from '../../lib/utils';
 import { Review } from '../../types';
 import { toast } from 'sonner';
+import { PremiumLoader } from '../../components/ui/PremiumLoader';
 
 export default function AdminReviewsPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -159,10 +160,20 @@ export default function AdminReviewsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#EAE1D1]">
-              {filteredReviews.length === 0 ? (
+              {isLoading ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-[#8C7E72]">
-                    {isLoading ? 'Loading review submissions...' : 'No matching reviews found.'}
+                  <td colSpan={6} className="py-8">
+                    <PremiumLoader
+                      title="Loading Client Reviews..."
+                      subtitle="Fetching star ratings, verified purchase feedback, and testimonials..."
+                      compact
+                    />
+                  </td>
+                </tr>
+              ) : filteredReviews.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-16 text-center text-[#8C7E72] font-serif">
+                    No matching reviews found.
                   </td>
                 </tr>
               ) : (

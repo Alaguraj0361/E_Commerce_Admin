@@ -156,3 +156,85 @@ export interface Review {
   helpfulVotes: number;
   createdAt: string;
 }
+
+// =========================================================================
+// STITCHING & TAILORING ATELIER TYPES
+// =========================================================================
+export interface MeasurementFieldDef {
+  key: string;
+  label: string;
+  placeholder?: string;
+  hint?: string;
+}
+
+export interface StitchingCategory {
+  _id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  basePrice: number;
+  estimatedTurnaroundDays: number;
+  iconName?: string;
+  fields: MeasurementFieldDef[];
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface StitchingMeasurement {
+  _id: string;
+  measurementCode: string; // e.g. "MEAS-1001"
+  date: string; // YYYY-MM-DD
+  customerName: string;
+  customerPhone: string;
+  customerEmail?: string;
+  customerCity?: string;
+  categorySlug: string;
+  categoryName: string;
+  measurements: Record<string, string>; // e.g. { bust: "36", length: "14.5" }
+  specialInstructions?: string;
+  fitPreference?: 'Comfort Fit' | 'Snug / Tight Fit' | 'Standard Fit';
+  unit: 'inches' | 'cm';
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface StitchingDispatchOrder {
+  _id: string;
+  stitchingOrderNumber: string; // e.g. "STITCH-1001"
+  date: string; // Booking / Order date
+  customerName: string;
+  customerPhone: string;
+  customerAddress?: string;
+  categorySlug: string;
+  categoryName: string;
+  measurementId?: string; // Reference to StitchingMeasurement._id
+  measurementCode?: string; // e.g. "MEAS-1001"
+  measurementSummary?: string; // e.g. "Bust: 36\", Length: 14.5\""
+  estimatedDispatchDate: string; // Target delivery/dispatch date
+  actualDispatchDate?: string;
+  additionalInformation?: string; // Fabric details, styling, neck pattern, etc.
+  liningType?: string; // e.g. "Pure Mulmul Cotton", "Crepe", "No Lining"
+  fabricProvidedBy?: 'Customer Provided' | 'Store Fabric' | 'Purchased with Saree';
+  assignedTailor?: string; // Master tailor name
+  priority: 'Normal' | 'Express (48h)' | 'Urgent Wedding VIP';
+  status:
+    | 'Order Confirmed'
+    | 'Fabric Received'
+    | 'Pattern Cutting'
+    | 'Embroidery / Aari'
+    | 'Stitching In Progress'
+    | 'Trial / Alteration'
+    | 'Ironing & Packed'
+    | 'Ready for Dispatch'
+    | 'Dispatched'
+    | 'Delivered';
+  stitchingCharge: number;
+  advancePaid: number;
+  balanceDue: number;
+  courierPartner?: string;
+  trackingNumber?: string;
+  notes?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}

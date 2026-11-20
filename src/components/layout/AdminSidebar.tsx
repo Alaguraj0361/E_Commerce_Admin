@@ -15,6 +15,9 @@ import {
   ExternalLink,
   LogOut,
   X,
+  Scissors,
+  Ruler,
+  Sliders,
 } from 'lucide-react';
 import { useAdminAuthStore } from '../../store/adminAuthStore';
 
@@ -23,6 +26,9 @@ const navigation = [
   { name: 'Products Catalog', href: '/products', icon: ShoppingBag },
   { name: 'Categories', href: '/categories', icon: FolderTree },
   { name: 'Orders & Dispatch', href: '/orders', icon: Package },
+  { name: 'Stitching & Dispatch', href: '/stitching/dispatch', icon: Scissors, badge: 'Atelier' },
+  { name: 'Customer Measurements', href: '/stitching/measurements', icon: Ruler },
+  { name: 'Stitching Categories', href: '/stitching/categories', icon: Sliders },
   { name: 'Promotions & Coupons', href: '/coupons', icon: Tag },
   { name: 'Customer Database', href: '/customers', icon: Users },
   { name: 'Review Moderation', href: '/reviews', icon: MessageSquareQuote },
@@ -112,8 +118,23 @@ export const AdminSidebar = ({ isOpen = false, onClose }: AdminSidebarProps) => 
                     : 'text-[#FAF0DD]/80 hover:text-[#FFE59E] hover:bg-[#380725]/80 border border-transparent hover:border-[#D4AF37]/40'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-[#280619]' : 'text-[#D4AF37]'}`} />
-                <span>{item.name}</span>
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-3">
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-[#280619]' : 'text-[#D4AF37]'}`} />
+                    <span>{item.name}</span>
+                  </div>
+                  {(item as any).badge && (
+                    <span
+                      className={`text-[9px] font-bold px-1.5 py-0.5 rounded font-mono ${
+                        isActive
+                          ? 'bg-[#280619] text-[#FFE59E]'
+                          : 'bg-[#FFE59E]/20 text-[#FFE59E] border border-[#D4AF37]/40'
+                      }`}
+                    >
+                      {(item as any).badge}
+                    </span>
+                  )}
+                </div>
               </Link>
             );
           })}

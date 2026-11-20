@@ -27,6 +27,7 @@ import { formatCurrency, formatDate } from '../../lib/utils';
 import { Order } from '../../types';
 import { toast } from 'sonner';
 import { ShippingLabelModal } from '../../components/ui/ShippingLabelModal';
+import { PremiumLoader } from '../../components/ui/PremiumLoader';
 
 const STATUS_OPTIONS = [
   'Pending',
@@ -337,10 +338,20 @@ export default function AdminOrdersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#EAE1D1]">
-              {filteredOrders.length === 0 ? (
+              {isLoading ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-[#8C7E72]">
-                    {isLoading ? 'Loading order manifests...' : 'No matching orders found.'}
+                  <td colSpan={7} className="py-8">
+                    <PremiumLoader
+                      title="Loading Order Manifests..."
+                      subtitle="Retrieving customer transactions, delivery checkpoints and courier tracking..."
+                      compact
+                    />
+                  </td>
+                </tr>
+              ) : filteredOrders.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-16 text-center text-[#8C7E72] font-serif">
+                    No matching orders found.
                   </td>
                 </tr>
               ) : (
